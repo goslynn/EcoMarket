@@ -13,7 +13,7 @@ public class Bodega {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_bodega", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 100)
     @NotNull
@@ -28,14 +28,13 @@ public class Bodega {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_sucursal", nullable = false)
-    private cl.duocuc.ecomarket.modelo.entity.inventario.Sucursal idSucursal;
+    private Sucursal idSucursal;
 
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

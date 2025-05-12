@@ -11,4 +11,5 @@ public interface RolRepository extends JpaRepository<Rol, Integer> {
     @EntityGraph(attributePaths = "rolesPermisos")
     Optional<Rol> findWithPermisosById(Integer id);
 
+
 }

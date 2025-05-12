@@ -14,7 +14,7 @@ public class Sucursal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sucursal", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 100)
     @NotNull
@@ -25,14 +25,11 @@ public class Sucursal {
     @Column(name = "activo")
     private Boolean activo;
 
-    @OneToMany(mappedBy = "idSucursal")
-    private Set<Bodega> bodegas = new LinkedHashSet<>();
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -52,12 +49,5 @@ public class Sucursal {
         this.activo = activo;
     }
 
-    public Set<Bodega> getBodegas() {
-        return bodegas;
-    }
-
-    public void setBodegas(Set<Bodega> bodegas) {
-        this.bodegas = bodegas;
-    }
 
 }
