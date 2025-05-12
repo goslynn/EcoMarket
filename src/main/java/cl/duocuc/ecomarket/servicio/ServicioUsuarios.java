@@ -7,10 +7,9 @@ import cl.duocuc.ecomarket.modelo.dto.usuario.signup.*;
 import cl.duocuc.ecomarket.modelo.mapper.PermisoMapper;
 import cl.duocuc.ecomarket.modelo.mapper.RolMapper;
 import cl.duocuc.ecomarket.modelo.mapper.UsuarioMapper;
-import cl.duocuc.ecomarket.modelo.repository.PermisoRepository;
-import cl.duocuc.ecomarket.modelo.repository.RolRepository;
-import cl.duocuc.ecomarket.modelo.repository.RolesPermisosRepository;
-import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
+import cl.duocuc.ecomarket.modelo.repository.Usuario.*;
+import cl.duocuc.ecomarket.modelo.repository.Roles.*;
+import cl.duocuc.ecomarket.modelo.repository.Permiso.*;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
 import cl.duocuc.ecomarket.util.exception.ApiException;
@@ -21,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 public class ServicioUsuarios {
