@@ -3,7 +3,7 @@ package cl.duocuc.ecomarket.modelo.dto.venta;
 import java.math.BigDecimal;
 
 public record DetalleVentaDTO (
-        Integer idProducto,
+        Long idProducto,
         Integer cantidad,
         BigDecimal precioUnitario
 ){}

@@ -13,6 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "venta", schema = "venta")
 public class Venta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('venta.venta_id_venta_seq')")
@@ -31,8 +32,8 @@ public class Venta {
     @Column(name = "id_tipo_documento", nullable = false)
     private Integer idTipoDocumento;
 
+    @Column(name = "fecha_venta", insertable = false)
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "fecha_venta")
     private Instant fechaVenta;
 
     @NotNull
@@ -58,8 +59,8 @@ public class Venta {
     @Column(name = "id_forma_pago", nullable = false)
     private Integer idFormaPago;
 
+    @Column(name = "activo", insertable = false)
     @ColumnDefault("true")
-    @Column(name = "activo")
     private Boolean activo;
 
     @OneToMany(mappedBy = "idVenta")
