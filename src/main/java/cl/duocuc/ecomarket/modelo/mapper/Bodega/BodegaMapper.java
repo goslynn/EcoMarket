@@ -1,7 +1,7 @@
-package cl.duocuc.ecomarket.modelo.mapper;
+package cl.duocuc.ecomarket.modelo.mapper.Bodega;
 
-import cl.duocuc.ecomarket.modelo.dto.inventario.BodegaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.BodegaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaResponseDTO;
 import cl.duocuc.ecomarket.modelo.entity.inventario.Bodega;
 import cl.duocuc.ecomarket.modelo.entity.inventario.Sucursal;
 

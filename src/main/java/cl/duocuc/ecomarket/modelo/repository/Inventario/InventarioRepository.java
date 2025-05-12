@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.modelo.repository;
+package cl.duocuc.ecomarket.modelo.repository.Inventario;
 
 
 import cl.duocuc.ecomarket.modelo.entity.inventario.Inventario;

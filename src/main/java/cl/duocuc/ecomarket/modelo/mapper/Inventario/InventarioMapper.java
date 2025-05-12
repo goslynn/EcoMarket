@@ -1,8 +1,8 @@
-package cl.duocuc.ecomarket.modelo.mapper;
+package cl.duocuc.ecomarket.modelo.mapper.Inventario;
 
 
-import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioResponseDTO;
 import cl.duocuc.ecomarket.modelo.entity.inventario.Inventario;
 import cl.duocuc.ecomarket.modelo.entity.inventario.Producto;
 

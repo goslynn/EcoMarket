@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.modelo.repository;
+package cl.duocuc.ecomarket.modelo.repository.Roles;
 
 import cl.duocuc.ecomarket.modelo.entity.usuario.Rol;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -10,6 +10,4 @@ public interface RolRepository extends JpaRepository<Rol, Integer> {
 
     @EntityGraph(attributePaths = "rolesPermisos")
     Optional<Rol> findWithPermisosById(Integer id);
-
-
 }

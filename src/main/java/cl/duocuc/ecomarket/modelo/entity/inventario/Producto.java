@@ -124,5 +124,4 @@ public class Producto {
     public void setInventarios(Set<Inventario> inventarios) {
         this.inventarios = inventarios;
     }
-
 }

@@ -25,6 +25,9 @@ public class Sucursal {
     @Column(name = "activo")
     private Boolean activo;
 
+    @OneToMany(mappedBy = "idSucursal")
+    private Set<Bodega> bodegas = new LinkedHashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -49,5 +52,11 @@ public class Sucursal {
         this.activo = activo;
     }
 
+    public Set<Bodega> getBodegas() {
+        return bodegas;
+    }
 
+    public void setBodegas(Set<Bodega> bodegas) {
+        this.bodegas = bodegas;
+    }
 }

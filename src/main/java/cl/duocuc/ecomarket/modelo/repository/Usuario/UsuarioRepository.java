@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.modelo.repository;
+package cl.duocuc.ecomarket.modelo.repository.Usuario;
 
 import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
