@@ -14,7 +14,7 @@ public class Familia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_familia", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 50)
     @NotNull
@@ -33,11 +33,11 @@ public class Familia {
     @OneToMany(mappedBy = "idFamilia")
     private Set<Subfamilia> subfamilias = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -72,5 +72,4 @@ public class Familia {
     public void setSubfamilias(Set<Subfamilia> subfamilias) {
         this.subfamilias = subfamilias;
     }
-
 }

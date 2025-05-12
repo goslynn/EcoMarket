@@ -16,7 +16,7 @@ public class Subfamilia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_subfamilia", nullable = false)
-    private Integer id;
+    private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,11 +41,11 @@ public class Subfamilia {
     @OneToMany(mappedBy = "idSubfamilia")
     private Set<Producto> productos = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -88,5 +88,4 @@ public class Subfamilia {
     public void setProductos(Set<Producto> productos) {
         this.productos = productos;
     }
-
 }

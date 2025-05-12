@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.modelo.dto.inventario;
+package cl.duocuc.ecomarket.modelo.dto.inventario.Inventario;
 
 public record InventarioResponseDTO(
         Long id,
