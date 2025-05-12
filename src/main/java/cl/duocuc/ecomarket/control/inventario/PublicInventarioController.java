@@ -1,5 +1,6 @@
 package cl.duocuc.ecomarket.control.inventario;
 
+import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioResponseDTO;
 import cl.duocuc.ecomarket.servicio.ServicioInventario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +20,29 @@ public class PublicInventarioController {
         this.service = service;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/Inventario/{id}")
     public ResponseEntity<InventarioResponseDTO> consultar(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerInventario(id));
     }
 
-//    @PostMapping("/")
-//    public ResponseEntity<InventarioResponseDTO> crear(@RequestBody InventarioRequestDTO inventario){
-//        return ResponseEntity.status(201).body(service.crearInventario(inventario));
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Void> actualizar(@PathVariable Long id, @RequestBody InventarioRequestDTO inventario) {
-//        service.actualizarInventario(id, inventario);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<String> desactivar(@PathVariable Long id){
-//        service.desactivarInventario(id);
-//        return ResponseEntity.status(204).body(String.format("Inventario %d desactivado correctamente", id));
-//    }
-//
-//    @GetMapping("/")
-//    public ResponseEntity<List<InventarioResponseDTO>> listarTodos(){
-//        return ResponseEntity.ok(service.listarInventarios());
-//    }
+    @PostMapping("/Inventario")
+    public ResponseEntity<InventarioResponseDTO> crear(@RequestBody InventarioRequestDTO inventario){
+        InventarioResponseDTO creado = service.crearInventario(inventario);
+        return ResponseEntity.status(201).body(creado);
+    }
+
+    @PutMapping("/Inventario/{id}")
+    public ResponseEntity<Void> actualizar(@PathVariable Long id, @RequestBody InventarioRequestDTO inventario) {
+        service.actualizarInventario(id, inventario);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/Inventario/{id}")
+    public ResponseEntity<String> desactivar(@PathVariable Long id){
+        service.desactivarInventario(id);
+        return ResponseEntity.status(204).body(String.format("Inventario %d desactivado correctamente", id));
+    }
+
+
+
 }

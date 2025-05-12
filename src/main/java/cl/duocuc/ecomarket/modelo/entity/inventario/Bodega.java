@@ -28,17 +28,8 @@ public class Bodega {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_sucursal", nullable = false)
-
-
     private cl.duocuc.ecomarket.modelo.entity.inventario.Sucursal idSucursal;
 
-    public cl.duocuc.ecomarket.modelo.entity.inventario.Sucursal getIdSucursal() {
-        return idSucursal;
-    }
-
-    public void setIdSucursal(cl.duocuc.ecomarket.modelo.entity.inventario.Sucursal idSucursal) {
-        this.idSucursal = idSucursal;
-    }
 
     public Integer getId() {
         return id;
@@ -64,4 +55,11 @@ public class Bodega {
         this.activa = activa;
     }
 
+    public Sucursal getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(Sucursal idSucursal) {
+        this.idSucursal = idSucursal;
+    }
 }

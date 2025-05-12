@@ -17,7 +17,7 @@ public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 100)
     @NotNull
@@ -53,11 +53,11 @@ public class Producto {
     @OneToMany(mappedBy = "idProducto")
     private Set<Inventario> inventarios = new LinkedHashSet<>();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,6 +1,7 @@
 package cl.duocuc.ecomarket.servicio;
 
 
+import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioResponseDTO;
 import cl.duocuc.ecomarket.modelo.entity.inventario.Inventario;
 import cl.duocuc.ecomarket.modelo.mapper.InventarioMapper;
@@ -8,6 +9,7 @@ import cl.duocuc.ecomarket.modelo.repository.InventarioRepository;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ServicioInventario {
@@ -26,39 +28,39 @@ public class ServicioInventario {
     }
 
 
+    @Transactional
+    public InventarioResponseDTO crearInventario(InventarioRequestDTO dto) {
+        Inventario nuevoInventario = InventarioMapper.toEntity(dto);
+        Inventario guardado = inventarioRepo.save(nuevoInventario);
+        return InventarioMapper.toResponseDTO(guardado);
+    }
 
+    @Transactional
+    public void actualizarInventario(Long id, InventarioRequestDTO dto) throws ApiException {
+        Inventario existente = inventarioRepo.findById(id)
+                .filter(Inventario::getActivo)
+                .orElseThrow(() -> new ApiException(404, String.format("El inventario con ID %d no existe", id)));
+
+        // Actualiza solo los campos que no son nulos
+        if (dto.idBodega() != null) existente.setIdBodega(dto.idBodega());
+        if (dto.stockActual() != null) existente.setStockActual(dto.stockActual());
+        if (dto.stockMinimo() != null) existente.setStockMinimo(dto.stockMinimo());
+        if (dto.stockMaximo() != null) existente.setStockMaximo(dto.stockMaximo());
+
+        inventarioRepo.save(existente);
+    }
+
+    @Transactional
+    public void desactivarInventario(Long id) throws ApiException {
+        Inventario existente = inventarioRepo.findById(id)
+                .filter(Inventario::getActivo)
+                .orElseThrow(() -> new ApiException(404, String.format("El inventario con ID %d no existe", id)));
+
+        // Cambia el estado a inactivo
+        existente.setActivo(false);
+        inventarioRepo.save(existente);
+    }
 
 }
-
-
-//    @Transactional
-//    public InventarioResponseDTO crearInventario(InventarioRequestDTO inventario) throws ApiException {
-//        return persistencia.agregarInventario(inventario);
-//    }
-//
-//    @Transactional
-//    public void actualizarInventario(Long id, InventarioRequestDTO inventario) throws ApiException {
-//        if (id == null || id <= 0) {
-//            throw new ApiException(400, "El ID del inventario no es válido");
-//        }
-//        persistencia.actualizarInventario(id, inventario);
-//    }
-//
-//    @Transactional
-//    public void desactivarInventario(Long id) throws ApiException {
-//        if (id == null || id <= 0) {
-//            throw new ApiException(400, "El ID del inventario no es válido");
-//        }
-//        persistencia.desactivarInventario(id);
-//    }
-//
-//    public List<InventarioResponseDTO> listarInventarios() throws ApiException {
-//        List<InventarioResponseDTO> inventarios = persistencia.listarInventarios();
-//        if (inventarios.isEmpty()) {
-//            throw new ApiException(404, "No existen inventarios");
-//        }
-//        return inventarios;
-//    }
-
 
 
