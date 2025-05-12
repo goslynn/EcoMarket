@@ -9,6 +9,7 @@ import cl.duocuc.ecomarket.modelo.mapper.RolMapper;
 import cl.duocuc.ecomarket.modelo.mapper.UsuarioMapper;
 import cl.duocuc.ecomarket.modelo.repository.PermisoRepository;
 import cl.duocuc.ecomarket.modelo.repository.RolRepository;
+import cl.duocuc.ecomarket.modelo.repository.RolesPermisosRepository;
 import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
@@ -21,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ServicioUsuarios {
@@ -161,6 +164,37 @@ public class ServicioUsuarios {
             throw new RuntimeException("el usuario no existe");
         }
         persistencia.actualizarUsuario(id, usuario);
+    }
+
+
+    @Transactional
+    public RolPermisosResponseDTO update(Integer id, RolPermisosRequestDTO rolPermisos) throws ApiException {
+        Rol rol = rolRepo.findWithPermisosById(id)
+                         .orElseThrow(() -> new ApiException(404, String.format("El rol con ID %d no existe", id)));
+
+        rol.setNombreRol(rolPermisos.nombre());
+        rol.setDescripcion(rolPermisos.descripcion());
+
+        List<Permiso> nuevosPermisos = permisoRepo.findAllById(rolPermisos.permisos());
+
+        log.info("Nuevos permisos: {}", nuevosPermisos.size());
+
+        for (Permiso permiso : nuevosPermisos) {
+            RolesPermiso rp = new RolesPermiso();
+            rp.setRol(rol);
+            rp.setPermiso(permiso);
+            rp.setId(new RolesPermisoId(rol.getId(), permiso.getId()));
+            rol.getRolesPermisos().add(rp);
+        }
+
+        rolRepo.save(rol);
+
+        return new RolPermisosResponseDTO(
+                rol.getId(),
+                rol.getNombreRol(),
+                rol.getDescripcion(),
+                nuevosPermisos.stream().map(PermisoMapper::toResponseDTO).toList()
+        );
     }
 
 

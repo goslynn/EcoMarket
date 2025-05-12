@@ -14,7 +14,6 @@ public class ServicioInventario {
 
     private final InventarioRepository inventarioRepo;
 
-    @Autowired
     public ServicioInventario(InventarioRepository inventarioRepo) {
         this.inventarioRepo = inventarioRepo;
     }
