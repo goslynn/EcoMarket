@@ -52,12 +52,6 @@ public class ServicioInventario {
                 .filter(Inventario::getActivo)
                 .orElseThrow(() -> new ApiException(404, String.format("El inventario con ID %d no existe", id)));
 
-        // Actualiza solo los campos que no son nulos
-        if (dto.idBodega() != null) existente.setIdBodega(dto.idBodega());
-        if (dto.stockActual() != null) existente.setStockActual(dto.stockActual());
-        if (dto.stockMinimo() != null) existente.setStockMinimo(dto.stockMinimo());
-        if (dto.stockMaximo() != null) existente.setStockMaximo(dto.stockMaximo());
-
         inventarioRepo.save(existente);
     }
 
