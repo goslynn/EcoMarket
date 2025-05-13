@@ -37,24 +37,24 @@ public class PublicInventarioController {
     // Endpoints para Inventario
     // ==============================
 
-    @GetMapping("/Inventario/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<InventarioResponseDTO> consultarInventario(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerInventario(id));
     }
 
-    @PostMapping("/Inventario")
+    @PostMapping
     public ResponseEntity<InventarioResponseDTO> crearInventario(@RequestBody InventarioRequestDTO inventario){
         InventarioResponseDTO creado = service.crearInventario(inventario);
         return ResponseEntity.status(201).body(creado);
     }
 
-    @PutMapping("/Inventario/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> actualizarInventario(@PathVariable Long id, @RequestBody InventarioRequestDTO inventario) {
         service.actualizarInventario(id, inventario);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/Inventario/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> desactivarInventario(@PathVariable Long id){
         service.desactivarInventario(id);
         return ResponseEntity.status(204).body(String.format("Inventario %d desactivado correctamente", id));
