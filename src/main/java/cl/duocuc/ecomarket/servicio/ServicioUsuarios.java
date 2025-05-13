@@ -11,6 +11,7 @@ import cl.duocuc.ecomarket.modelo.repository.Usuario.*;
 import cl.duocuc.ecomarket.modelo.repository.Roles.*;
 import cl.duocuc.ecomarket.modelo.repository.Permiso.*;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
+import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.annotation.PostConstruct;
@@ -152,15 +153,37 @@ public class ServicioUsuarios {
      * Aca se declara el metodo de el put y nos asguramos que cuando se pase una peticion con un id que no es el que
      * corresponda arroje error de que no existe
      * @param id
-     * @param usuario
+     * @param u
      * @throws ApiException
      */
-    @Transactional
-    public void actualizar(Integer id, UsuarioUpdateRequestDTO usuario) throws ApiException {
+    public CodigoDescripcion<Integer,String> actualizar(Integer id, UsuarioUpdateRequestDTO u) throws ApiException {
         if (!userRepo.existsById(id)){
             throw new RuntimeException("el usuario no existe");
         }
-        persistencia.actualizarUsuario(id, usuario);
+        persistencia.actualizarUsuario(id,
+                u.nombre(),
+                u.correo(),
+                encriptador.encriptado(u.contrasenaHash()) ?
+                u.contrasenaHash() : encriptador.encriptar(u.contrasenaHash()),
+                u.fechaNacimiento(),
+                String.valueOf(u.genero().toChar()),
+                u.idRol(),
+                u.telefono(),
+                u.rutEmpleado(),
+                u.fechaContratacion(),
+                u.cargoEmpleado(),
+                u.areaEmpleado());
+        return new CodigoDescripcion<>() {
+            @Override
+            public Integer getCodigo() {
+                return id;
+            }
+
+            @Override
+            public String getDescripcion() {
+                return "Usuario actualizado correctamente";
+            }
+        };
     }
 
 

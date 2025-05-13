@@ -2,6 +2,12 @@
 
 package cl.duocuc.ecomarket.modelo.dto.usuario;
 
+import cl.duocuc.ecomarket.tipodatos.Genero;
+import cl.duocuc.ecomarket.util.validacion.FechaDB;
+import cl.duocuc.ecomarket.util.validacion.Requerido;
+import cl.duocuc.ecomarket.util.validacion.Rut;
+import cl.duocuc.ecomarket.util.validacion.Telefono;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -20,15 +26,30 @@ import jakarta.validation.constraints.Size;
  * @param areaEmpleado
  */
 public record UsuarioUpdateRequestDTO(
-        @Size(min = 1, max = 255) String nombre,
-        @Size(min = 1, max = 255) String correo,
-        @Size(min = 8, max = 255) String contrasenaHash,
-        @Size(min = 8, max = 10) String fechaNacimiento,
-        @Size(min = 1, max = 1) String genero,
+
+        String nombre,
+
+        String correo,
+
+        String contrasenaHash,
+
+        @FechaDB
+        String fechaNacimiento,
+
+        Genero genero,
+
         Integer idRol,
-        @Size(min = 1, max = 25) String telefono,
-        @Size(min = 1, max = 20) String rutEmpleado,
-        @Size(min = 8, max = 10) String fechaContratacion,
-        @Size(min = 1, max = 255) String cargoEmpleado,
-        @Size(min = 1, max = 255) String areaEmpleado
+
+        @Telefono
+        String telefono,
+
+        @Rut
+        String rutEmpleado,
+
+        @FechaDB
+        String fechaContratacion,
+
+        String cargoEmpleado,
+
+        String areaEmpleado
 ) {}

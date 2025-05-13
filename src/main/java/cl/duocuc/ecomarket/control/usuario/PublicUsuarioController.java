@@ -4,6 +4,7 @@ package cl.duocuc.ecomarket.control.usuario;
 import cl.duocuc.ecomarket.modelo.dto.usuario.*;
 import cl.duocuc.ecomarket.modelo.dto.usuario.signup.*;
 import cl.duocuc.ecomarket.servicio.ServicioUsuarios;
+import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,8 @@ public class PublicUsuarioController {
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar( @PathVariable Integer id, @RequestBody UsuarioUpdateRequestDTO usuario) {
-        service.actualizar(id, usuario);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CodigoDescripcion<Integer,String>> actualizar(@PathVariable Integer id, @RequestBody UsuarioUpdateRequestDTO usuario) {
+        return ResponseEntity.ok(service.actualizar(id, usuario));
     }
 
 
