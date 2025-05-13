@@ -85,24 +85,37 @@ public class PersistenciaSP {
      * @param id
      * @param usuario
      */
-    public void actualizarUsuario(Integer id,UsuarioUpdateRequestDTO usuario) {
+    public void actualizarUsuario(
+            Integer id,
+            String nombre,
+            String correo,
+            String contrasenaHash,
+            String fechaNacimiento,
+            String genero,
+            Integer idRol,
+            String telefono,
+            String rutEmpleado,
+            String fechaContratacion,
+            String cargoEmpleado,
+            String areaEmpleado
+            ) {
         StoredProcedureQuery sql = initParametersActualizarUsuario(
                 em.createStoredProcedureQuery("usuario.usp_actualizar_usuario")
         );
 
         // Conversión de Long a Integer
         sql.setParameter(1, id);
-        sql.setParameter(2, usuario.nombre());
-        sql.setParameter(3, usuario.correo());
-        sql.setParameter(4, usuario.contrasenaHash());
-        sql.setParameter(5, usuario.fechaNacimiento());
-        sql.setParameter(6, usuario.genero());
-        sql.setParameter(7, usuario.idRol());
-        sql.setParameter(8, usuario.telefono());
-        sql.setParameter(9, usuario.rutEmpleado());
-        sql.setParameter(10, usuario.fechaContratacion());
-        sql.setParameter(11, usuario.cargoEmpleado());
-        sql.setParameter(12, usuario.areaEmpleado());
+        sql.setParameter(2, nombre);
+        sql.setParameter(3, correo);
+        sql.setParameter(4, contrasenaHash );
+        sql.setParameter(5, fechaNacimiento);
+        sql.setParameter(6, genero);
+        sql.setParameter(7, idRol);
+        sql.setParameter(8, telefono);
+        sql.setParameter(9, rutEmpleado);
+        sql.setParameter(10, fechaContratacion);
+        sql.setParameter(11, cargoEmpleado);
+        sql.setParameter(12, areaEmpleado);
 
         // Ejecuta el SP
         sql.execute();

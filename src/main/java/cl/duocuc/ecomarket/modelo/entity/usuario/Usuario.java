@@ -44,12 +44,12 @@ public class Usuario {
     @JoinColumn(name = "id_rol_usuario", nullable = false)
     private Rol Rol;
 
-    @ColumnDefault("now()")
     @Column(name = "fecha_creacion")
+    @ColumnDefault("now()")
     private Instant fechaCreacion;
 
-    @ColumnDefault("true")
     @Column(name = "activo")
+    @ColumnDefault("true")
     private Boolean activo;
 
     public Integer getId() {

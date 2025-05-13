@@ -7,10 +7,11 @@ import cl.duocuc.ecomarket.modelo.dto.usuario.signup.*;
 import cl.duocuc.ecomarket.modelo.mapper.PermisoMapper;
 import cl.duocuc.ecomarket.modelo.mapper.RolMapper;
 import cl.duocuc.ecomarket.modelo.mapper.UsuarioMapper;
-import cl.duocuc.ecomarket.modelo.repository.Permiso.PermisoRepository;
-import cl.duocuc.ecomarket.modelo.repository.Roles.RolRepository;
-import cl.duocuc.ecomarket.modelo.repository.Usuario.UsuarioRepository;
+import cl.duocuc.ecomarket.modelo.repository.Usuario.*;
+import cl.duocuc.ecomarket.modelo.repository.Roles.*;
+import cl.duocuc.ecomarket.modelo.repository.Permiso.*;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
+import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.annotation.PostConstruct;
@@ -20,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+
 
 @Service
 public class ServicioUsuarios {
@@ -152,15 +153,68 @@ public class ServicioUsuarios {
      * Aca se declara el metodo de el put y nos asguramos que cuando se pase una peticion con un id que no es el que
      * corresponda arroje error de que no existe
      * @param id
-     * @param usuario
+     * @param u
      * @throws ApiException
      */
-    @Transactional
-    public void actualizar(Integer id, UsuarioUpdateRequestDTO usuario) throws ApiException {
+    public CodigoDescripcion<Integer,String> actualizar(Integer id, UsuarioUpdateRequestDTO u) throws ApiException {
         if (!userRepo.existsById(id)){
             throw new RuntimeException("el usuario no existe");
         }
-        persistencia.actualizarUsuario(id, usuario);
+        persistencia.actualizarUsuario(id,
+                u.nombre(),
+                u.correo(),
+                encriptador.encriptado(u.contrasenaHash()) ?
+                u.contrasenaHash() : encriptador.encriptar(u.contrasenaHash()),
+                u.fechaNacimiento(),
+                String.valueOf(u.genero().toChar()),
+                u.idRol(),
+                u.telefono(),
+                u.rutEmpleado(),
+                u.fechaContratacion(),
+                u.cargoEmpleado(),
+                u.areaEmpleado());
+        return new CodigoDescripcion<>() {
+            @Override
+            public Integer getCodigo() {
+                return id;
+            }
+
+            @Override
+            public String getDescripcion() {
+                return "Usuario actualizado correctamente";
+            }
+        };
+    }
+
+
+    @Transactional
+    public RolPermisosResponseDTO update(Integer id, RolPermisosRequestDTO rolPermisos) throws ApiException {
+        Rol rol = rolRepo.findWithPermisosById(id)
+                         .orElseThrow(() -> new ApiException(404, String.format("El rol con ID %d no existe", id)));
+
+        rol.setNombreRol(rolPermisos.nombre());
+        rol.setDescripcion(rolPermisos.descripcion());
+
+        List<Permiso> nuevosPermisos = permisoRepo.findAllById(rolPermisos.permisos());
+
+        log.info("Nuevos permisos: {}", nuevosPermisos.size());
+
+        for (Permiso permiso : nuevosPermisos) {
+            RolesPermiso rp = new RolesPermiso();
+            rp.setRol(rol);
+            rp.setPermiso(permiso);
+            rp.setId(new RolesPermisoId(rol.getId(), permiso.getId()));
+            rol.getRolesPermisos().add(rp);
+        }
+
+        rolRepo.save(rol);
+
+        return new RolPermisosResponseDTO(
+                rol.getId(),
+                rol.getNombreRol(),
+                rol.getDescripcion(),
+                nuevosPermisos.stream().map(PermisoMapper::toResponseDTO).toList()
+        );
     }
 
 
