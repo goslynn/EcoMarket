@@ -83,7 +83,7 @@ public class ServicioVenta {
 
         detalleRepo.saveAll(registroDetalle);
 
-        return new CodigoDescripcion<Integer, String>() {
+        return new CodigoDescripcion<>() {
             @Override
             public Integer getCodigo() {
                 return registroVenta.getId();

@@ -1,31 +1,31 @@
 package cl.duocuc.ecomarket.servicio;
 
 
-import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Familia.FamiliaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Familia.FamiliaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Producto.ProductoRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Producto.ProductoResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamilia.SubFamiliaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamilia.SubFamiliaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.BodegaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.BodegaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.FamiliaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.FamiliaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.ProductoRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.ProductoResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamiliaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamiliaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SucursalRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SucursalResponseDTO;
 import cl.duocuc.ecomarket.modelo.entity.inventario.*;
-import cl.duocuc.ecomarket.modelo.mapper.Bodega.BodegaMapper;
-import cl.duocuc.ecomarket.modelo.mapper.Familia.FamiliaMapper;
-import cl.duocuc.ecomarket.modelo.mapper.Inventario.InventarioMapper;
-import cl.duocuc.ecomarket.modelo.mapper.Producto.ProductoMapper;
-import cl.duocuc.ecomarket.modelo.mapper.SubFamilia.SubFamiliaMapper;
-import cl.duocuc.ecomarket.modelo.mapper.Sucursal.SucursalMapper;
-import cl.duocuc.ecomarket.modelo.repository.Bodega.BodegaRepository;
-import cl.duocuc.ecomarket.modelo.repository.Familia.FamiliaRepository;
-import cl.duocuc.ecomarket.modelo.repository.Inventario.InventarioRepository;
+import cl.duocuc.ecomarket.modelo.mapper.BodegaMapper;
+import cl.duocuc.ecomarket.modelo.mapper.FamiliaMapper;
+import cl.duocuc.ecomarket.modelo.mapper.InventarioMapper;
+import cl.duocuc.ecomarket.modelo.mapper.ProductoMapper;
+import cl.duocuc.ecomarket.modelo.mapper.SubFamiliaMapper;
+import cl.duocuc.ecomarket.modelo.mapper.SucursalMapper;
+import cl.duocuc.ecomarket.modelo.repository.BodegaRepository;
+import cl.duocuc.ecomarket.modelo.repository.FamiliaRepository;
+import cl.duocuc.ecomarket.modelo.repository.InventarioRepository;
 import cl.duocuc.ecomarket.modelo.repository.ProductoRepository;
-import cl.duocuc.ecomarket.modelo.repository.SubFamilia.SubFamiliaRepository;
-import cl.duocuc.ecomarket.modelo.repository.Sucursal.SucursalRepository;
+import cl.duocuc.ecomarket.modelo.repository.SubFamiliaRepository;
+import cl.duocuc.ecomarket.modelo.repository.SucursalRepository;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,6 +127,7 @@ public class ServicioInventario {
         Bodega existente = bodegaRepo.findById(id)
                 .filter(Bodega::getActiva)
                 .orElseThrow(() -> new ApiException(404, String.format("La bodega con ID %d no existe", id)));
+        existente.setActiva(false);
         bodegaRepo.save(existente);
     }
 
