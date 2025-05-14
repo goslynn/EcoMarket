@@ -3,25 +3,27 @@ package cl.duocuc.ecomarket.servicio;
 
 import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaUpdateDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Familia.FamiliaRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Familia.FamiliaResponseDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.Producto.ProductoRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.Producto.ProductoResponseDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamilia.SubFamiliaRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamilia.SubFamiliaResponseDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalUpdateDTO;
 import cl.duocuc.ecomarket.modelo.entity.inventario.*;
 import cl.duocuc.ecomarket.modelo.mapper.Bodega.BodegaMapper;
 import cl.duocuc.ecomarket.modelo.mapper.Familia.FamiliaMapper;
 import cl.duocuc.ecomarket.modelo.mapper.Inventario.InventarioMapper;
+import cl.duocuc.ecomarket.modelo.mapper.Producto.ProductoMapper;
 import cl.duocuc.ecomarket.modelo.mapper.SubFamilia.SubFamiliaMapper;
 import cl.duocuc.ecomarket.modelo.mapper.Sucursal.SucursalMapper;
 import cl.duocuc.ecomarket.modelo.repository.Bodega.BodegaRepository;
 import cl.duocuc.ecomarket.modelo.repository.Familia.FamiliaRepository;
 import cl.duocuc.ecomarket.modelo.repository.Inventario.InventarioRepository;
+import cl.duocuc.ecomarket.modelo.repository.ProductoRepository;
 import cl.duocuc.ecomarket.modelo.repository.SubFamilia.SubFamiliaRepository;
 import cl.duocuc.ecomarket.modelo.repository.Sucursal.SucursalRepository;
 import cl.duocuc.ecomarket.util.exception.ApiException;
@@ -38,14 +40,16 @@ public class ServicioInventario {
     private final SucursalRepository sucursalRepo;
     private final FamiliaRepository familiaRepo;
     private final SubFamiliaRepository subFamiliaRepo;
+    private final ProductoRepository productoRepo;
     //private final  bodegaRepo;
 
-    public ServicioInventario(InventarioRepository inventarioRepo, BodegaRepository bodegaRepo, SucursalRepository sucursalRepo, FamiliaRepository familiaRepo, SubFamiliaRepository subFamiliaRepo) {
+    public ServicioInventario(InventarioRepository inventarioRepo, BodegaRepository bodegaRepo, SucursalRepository sucursalRepo, FamiliaRepository familiaRepo, SubFamiliaRepository subFamiliaRepo, ProductoRepository productoRepo) {
         this.inventarioRepo = inventarioRepo;
         this.bodegaRepo = bodegaRepo;
         this.sucursalRepo = sucursalRepo;
         this.familiaRepo = familiaRepo;
         this.subFamiliaRepo = subFamiliaRepo;
+        this.productoRepo = productoRepo;
     }
 
 
@@ -102,13 +106,18 @@ public class ServicioInventario {
         return BodegaMapper.toResponseDTO(guardada);
     }
 
-    public void actualizarBodega(Long id, BodegaUpdateDTO dto) throws ApiException {
-        Bodega existente = bodegaRepo.findById(dto.idBodega())
+    public void actualizarBodega(Long id, BodegaRequestDTO dto) throws ApiException {
+        Bodega existente = bodegaRepo.findById(id)
                 .filter(Bodega::getActiva)
-                .orElseThrow(() -> new ApiException(404, String.format("La bodega con ID %d no existe", dto.idBodega())));
+                .orElseThrow(() -> new ApiException(404, String.format("La bodega con ID %d no existe", id)));
 
-        // Actualiza el nombre de la bodega
+        // Verifica que la sucursal exista
+        Sucursal sucursal = sucursalRepo.findById(dto.idSucursal())
+                .orElseThrow(() -> new ApiException(404, String.format("La sucursal con ID %d no existe", dto.idSucursal())));
+
+        // Actualiza los datos de la bodega
         existente.setNombreBodega(dto.nombreBodega());
+        existente.setIdSucursal(sucursal);
 
         bodegaRepo.save(existente);
     }
@@ -147,8 +156,7 @@ public class ServicioInventario {
         return SucursalMapper.toResponseDTO(guardada);
     }
 
-    @Transactional
-    public void actualizarSucursal(Long id, SucursalUpdateDTO dto) throws ApiException {
+    public void actualizarSucursal(Long id, SucursalRequestDTO dto) throws ApiException {
         Sucursal existente = sucursalRepo.findById(id)
                 .filter(Sucursal::getActivo)
                 .orElseThrow(() -> new ApiException(404, String.format("La sucursal con ID %d no existe", id)));
@@ -157,7 +165,7 @@ public class ServicioInventario {
         sucursalRepo.save(existente);
     }
 
-    @Transactional
+
     public void desactivarSucursal(Long id) throws ApiException {
         Sucursal existente = sucursalRepo.findById(id)
                 .filter(Sucursal::getActivo)
@@ -178,10 +186,6 @@ public class ServicioInventario {
     // Métodos para Familia
     // ==============================
 
-    // ==============================
-    // Métodos para Familia
-    // ==============================
-
     public FamiliaResponseDTO obtenerFamilia(Long id) throws ApiException {
         return familiaRepo.findById(id)
                 .filter(Familia::getActivo)
@@ -189,14 +193,12 @@ public class ServicioInventario {
                 .orElseThrow(() -> new ApiException(404, String.format("La familia con ID %d no existe", id)));
     }
 
-    @Transactional
     public FamiliaResponseDTO crearFamilia(FamiliaRequestDTO dto) {
         Familia nuevaFamilia = FamiliaMapper.toEntity(dto);
         Familia guardada = familiaRepo.save(nuevaFamilia);
         return FamiliaMapper.toResponseDTO(guardada);
     }
 
-    @Transactional
     public void actualizarFamilia(Long id, FamiliaRequestDTO dto) throws ApiException {
         Familia existente = familiaRepo.findById(id)
                 .filter(Familia::getActivo)
@@ -207,7 +209,6 @@ public class ServicioInventario {
         familiaRepo.save(existente);
     }
 
-    @Transactional
     public void desactivarFamilia(Long id) throws ApiException {
         Familia existente = familiaRepo.findById(id)
                 .filter(Familia::getActivo)
@@ -235,14 +236,12 @@ public class ServicioInventario {
                 .orElseThrow(() -> new ApiException(404, String.format("La subfamilia con ID %d no existe", id)));
     }
 
-    @Transactional
     public SubFamiliaResponseDTO crearSubFamilia(SubFamiliaRequestDTO dto) throws ApiException {
         Subfamilia subfamilia = SubFamiliaMapper.toEntity(dto);
         Subfamilia guardada = subFamiliaRepo.save(subfamilia);
         return SubFamiliaMapper.toResponseDTO(guardada);
     }
 
-    @Transactional
     public void actualizarSubFamilia(Long id, SubFamiliaRequestDTO dto) throws ApiException {
         Subfamilia existente = subFamiliaRepo.findById(id)
                 .filter(Subfamilia::getActivo)
@@ -253,7 +252,6 @@ public class ServicioInventario {
         subFamiliaRepo.save(existente);
     }
 
-    @Transactional
     public void desactivarSubFamilia(Long id) throws ApiException {
         Subfamilia existente = subFamiliaRepo.findById(id)
                 .filter(Subfamilia::getActivo)
@@ -270,6 +268,50 @@ public class ServicioInventario {
                 .toList();
     }
 
+    // ==============================
+    // Métodos para Producto
+    // ==============================
 
+    public ProductoResponseDTO obtenerProducto(Long id) throws ApiException {
+        return productoRepo.findById(id)
+                .filter(Producto::getActivo)
+                .map(ProductoMapper::toProductoResponseDTO)
+                .orElseThrow(() -> new ApiException(404, String.format("El producto con ID %d no existe", id)));
+    }
+
+    public ProductoResponseDTO crearProducto(ProductoRequestDTO dto) {
+        Producto nuevoProducto = ProductoMapper.toEntity(dto);
+        Producto guardado = productoRepo.save(nuevoProducto);
+        return ProductoMapper.toProductoResponseDTO(guardado);
+    }
+
+    public void actualizarProducto(Long id, ProductoRequestDTO dto) throws ApiException {
+        Producto existente = productoRepo.findById(id)
+                .filter(Producto::getActivo)
+                .orElseThrow(() -> new ApiException(404, String.format("El producto con ID %d no existe", id)));
+
+        existente.setNombreProducto(dto.NombreProducto());
+        existente.setCodigoProducto(dto.CodigoProducto());
+        existente.setDescripcion(dto.Descripcion());
+        existente.setPrecio(dto.Precio());
+
+        productoRepo.save(existente);
+    }
+
+    public void desactivarProducto(Long id) throws ApiException {
+        Producto existente = productoRepo.findById(id)
+                .filter(Producto::getActivo)
+                .orElseThrow(() -> new ApiException(404, String.format("El producto con ID %d no existe", id)));
+
+        existente.setActivo(false);
+        productoRepo.save(existente);
+    }
+
+    public List<ProductoResponseDTO> listarProductos() throws ApiException {
+        return productoRepo.findAll().stream()
+                .filter(Producto::getActivo)
+                .map(ProductoMapper::toProductoResponseDTO)
+                .toList();
+    }
 }
 
