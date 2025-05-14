@@ -8,13 +8,12 @@ import { Login }    from '../src/Routes/Login.jsx'
 import { Registro } from '../src/Routes/Registro.jsx'
 import NavBar from './Componentes/NavBar.jsx'
 import Tienda from './Routes/Tienda.jsx'
-
 //importacion del Context
 import VistaProducto from './Routes/VistaProducto.jsx'
 import Carrito from './Routes/Carrito.jsx'
 import Footer from './Componentes/Footer.jsx'
-import VistaAdmin from './Routes/RoutesAdmin/VistaAdmin.jsx'
-const router = createBrowserRouter([
+import Administrador from './Routes/Administrador.jsx'
+const router = createBrowserRouter([    
   {
     path:"/",
     element:<> 
@@ -43,6 +42,12 @@ const router = createBrowserRouter([
         </>,  
     errorElement:<></>
   },
+  ,
+    {
+    path: "/recuperacion",
+    element: <Recuperacion/>, // aquí usamos el layout con sidebar
+    errorElement:<></>
+  },
   {
     path:"/Producto/:id",
     element:<> 
@@ -62,10 +67,8 @@ const router = createBrowserRouter([
     errorElement:<></>
   },
     {
-    path:"/admin",
-    element:<> 
-          <VistaAdmin/>
-        </>,
+    path: "/admin",
+    element: <Administrador />, // aquí usamos el layout con sidebar
     errorElement:<></>
   }
 ])

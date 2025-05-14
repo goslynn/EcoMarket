@@ -6,11 +6,4 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-public class EcomarketApplication {
-
-
-    public static void main(String[] args) {
-        SpringApplication.run(EcomarketApplication.class, args);
-    }
-
-}
+public class EcomarketApplication
