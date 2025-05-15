@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import CardOpiniones from '../CardOpiniones'
+import CardOpiniones from './CardOpiniones'
 
 const Opiniones = () => {
   const url = "https://dummyjson.com/comments?limit=4"

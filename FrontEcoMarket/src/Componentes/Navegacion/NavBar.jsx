@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import cartIcon  from '../assets/carrito.svg'
-import EcoMarketLogo from '../assets/logo_tipografico.png';
+import cartIcon  from '../../assets/svg/carrito.svg'
+import EcoMarketLogo from '../../assets/logo_tipografico.png';
 
 export const NavBar = ()=> {
 

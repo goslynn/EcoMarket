@@ -1,7 +1,7 @@
 import React, { useDebugValue, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import cartIcon from '../assets/carrito.svg';
-import verIcon from '../assets/ver.svg';
+import cartIcon from '../assets/svg/carrito.svg';
+import verIcon from '../assets/svg/ver.svg';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -92,7 +92,7 @@ if(cargando){
                     <div className="text-center mt-auto d-flex gap-2 justify-content-around">
                       <button className="btn btn-outline-success">
                         <img src={cartIcon} alt="carrito-icon" className=" cart-icon-carta" width={20} height={20} />
-                        Añadir al carrito
+                        Añadir al carro
                       </button>
                       <a  onClick={()=> verProducto(producto.id)} className="btn btn-outline-success">
                         <img src={verIcon}  alt="ver-icon" className='cart-icon-carta' width={20} height={20} />

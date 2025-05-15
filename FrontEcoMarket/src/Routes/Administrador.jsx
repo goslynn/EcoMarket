@@ -1,11 +1,18 @@
-import React from 'react'
-import SideBar from '../Componentes/SideBar'
-
-
+import SideBar from '../Componentes/Navegacion/SideBar'
+import '../css/AdminStyle.css'
+import { Outlet } from 'react-router-dom'
 const Administrador = () => {
   return (
-        <SideBar></SideBar> 
-        
+
+    <section>      
+        <SideBar />
+      <div className='ps-5'>
+        <div className="admin-content ps-4" style={{ flex: 1, padding: '1rem' }}>
+          <Outlet />
+        </div>
+      </div>
+    </section>
+
   )
 }
 

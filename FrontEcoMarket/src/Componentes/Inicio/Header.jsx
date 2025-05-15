@@ -1,5 +1,5 @@
 import React from 'react';
-import flecha from '../../assets/flecha.svg';
+import flecha from '../../assets/svg/flecha.svg';
 import EcoMarketLogo from '../../assets/EcoMarket-logo.webp';
 
 const Header = () => {
@@ -16,7 +16,7 @@ const Header = () => {
           <div className="d-flex justify-content-center justify-content-lg-start gap-3">
             <a className="btn btn-success d-flex align-items-center gap-2" href="#Populares">
               Ver Destacados
-              <img src={flecha} alt="Flecha" width="20" height="20" className="me-2" />
+            <img src={flecha} alt="Flecha" width="20" height="20" className="me-2" />
             </a>
           </div>
         </div>

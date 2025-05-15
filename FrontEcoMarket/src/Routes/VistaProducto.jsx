@@ -1,6 +1,6 @@
 import {React,useState, useEffect}  from 'react'
 import { useParams } from 'react-router-dom';
-import cartIcon  from '../assets/carrito.svg'
+import cartIcon  from '../assets/svg/carrito.svg'
 import Skeleton from 'react-loading-skeleton';
 import Populares from '../Componentes/Inicio/Populares';
 const RenderProducto = () => {

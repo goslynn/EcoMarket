@@ -1,18 +1,23 @@
-import { createBrowserRouter, RouterProvider} from 'react-router-dom'
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx' 
-// paginas
-import { Login }    from '../src/Routes/Login.jsx'
-import { Registro } from '../src/Routes/Registro.jsx'
-import NavBar from './Componentes/NavBar.jsx'
-import Tienda from './Routes/Tienda.jsx'
-//importacion del Context
-import VistaProducto from './Routes/VistaProducto.jsx'
-import Carrito from './Routes/Carrito.jsx'
-import Footer from './Componentes/Footer.jsx'
-import Administrador from './Routes/Administrador.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import './index.css';
+import App from './App.jsx';
+
+// Componentes comunes
+import NavBar from './Componentes/Navegacion/NavBar.jsx';
+import Footer from './Componentes/Footer.jsx';
+import Dashboard from './Componentes/Administrador/Dashboard.jsx';
+import Inventario from './Componentes/Administrador/Servicios/Inventario.jsx';
+// Rutas
+import { Login } from './Routes/Login.jsx';
+import { Registro } from './Routes/Registro.jsx';
+import Tienda from './Routes/Tienda.jsx';
+import VistaProducto from './Routes/VistaProducto.jsx';
+import Carrito from './Routes/Carrito.jsx';
+import Administrador from './Routes/Administrador.jsx';
+
 const router = createBrowserRouter([    
   {
     path:"/",
@@ -42,12 +47,7 @@ const router = createBrowserRouter([
         </>,  
     errorElement:<></>
   },
-  ,
-    {
-    path: "/recuperacion",
-    element: <Recuperacion/>, // aquí usamos el layout con sidebar
-    errorElement:<></>
-  },
+  
   {
     path:"/Producto/:id",
     element:<> 
@@ -66,10 +66,32 @@ const router = createBrowserRouter([
         </>,
     errorElement:<></>
   },
-    {
-    path: "/admin",
-    element: <Administrador />, // aquí usamos el layout con sidebar
-    errorElement:<></>
+  {
+    path: "/admin/",
+    element: <><Administrador /></>,
+    errorElement: <></>,
+    children: [
+      {
+        path: "",
+        element: <Dashboard/>
+      },
+      {
+        path: "usuarios",
+        element: <h2>Gestión de Usuarios</h2>
+      },
+      {
+        path: "inventario",
+        element: <Inventario/>
+      },
+      {
+        path: "sucursales",
+        element: <h2>Gestión de sucursales</h2>
+      },
+            {
+        path: "informes",
+        element: <h2>Informes de ventas</h2>
+      }
+    ]
   }
 ])
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import Acordeon from '../Acordeon'
+import Acordeon from './Acordeon'
 
 
 const Mapa = () => {
