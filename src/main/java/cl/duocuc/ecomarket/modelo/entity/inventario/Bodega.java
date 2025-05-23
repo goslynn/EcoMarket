@@ -61,4 +61,8 @@ public class Bodega {
     public void setIdSucursal(Sucursal idSucursal) {
         this.idSucursal = idSucursal;
     }
+
+
+
+
 }
