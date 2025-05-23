@@ -1,46 +1,6 @@
-import { useState,useEffect } from "react";
-import React from 'react';
-import Skeleton from "react-loading-skeleton";
-
-const CardFiltros = () => {
-  const [cargando,setCargando] = useState(true)
-
-  useEffect(()=>{
-    setTimeout(()=>{
-      setCargando(false)
-    },800)
-  },[])
+const CardFiltros = ({ text, onclick }) => {
 
 
-  const render = ()=>{
-    return(
-        <div className="container my-4 mt-5">
-              <div className="card">
-                <div className="card-body">
-                  <h3 className="mb-3 display-5 fw-bold text-success"><Skeleton/></h3>
-                  <div className="row gy-2 gx-3 align-items-center">
-                    <div className="col-12 col-sm-6 col-md-3">
-                      <Skeleton/>
-                    </div>
-                    <div className="col-12 col-sm-6 col-md-3">
-                      <Skeleton/>
-                    </div>
-                    <div className="col-12 col-sm-6 col-md-3">
-                      <Skeleton/>
-                    </div>
-                    <div className="col-12 col-sm-6 col-md-3 text-sm-end">
-                      <Skeleton/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-    );
-  }
-
-  if(cargando){
-    return render()
-  }else{
     return (
       <div className="container my-4 mt-5">
         <div className="card">
@@ -66,8 +26,8 @@ const CardFiltros = () => {
                 </select>
               </div>
               <div className="col-12 col-sm-6 col-md-3 text-sm-end">
-                <button className="btn btn-success w-100">
-                  Aplicar
+                <button className="btn btn-success w-100" onClick={onclick}>
+                  { text }
                 </button>
               </div>
             </div>
@@ -75,8 +35,7 @@ const CardFiltros = () => {
         </div>
       </div>
     );
-  }
-    
+  
 };
 
 export default CardFiltros;
