@@ -17,7 +17,7 @@ public class VentaMapper {
                 v.getTotalIva(),
                 v.getTotalBruto(),
                 toDTO(v),
-                v.getFechaVenta() == null ? "" : v.getFechaVenta().toString()
+                v.getFechaCreacion() == null ? "" : v.getFechaCreacion().toString()
         );
     }
 

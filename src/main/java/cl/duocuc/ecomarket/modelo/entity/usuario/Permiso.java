@@ -1,5 +1,6 @@
 package cl.duocuc.ecomarket.modelo.entity.usuario;
 
+import cl.duocuc.ecomarket.modelo.entity.EntidadEcomarket;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnDefault;
@@ -10,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "permisos", schema = "usuario")
-public class Permiso implements Cloneable {
+public class Permiso extends EntidadEcomarket implements Cloneable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_permiso", nullable = false)
@@ -23,13 +25,6 @@ public class Permiso implements Cloneable {
     @Column(name = "descripcion", length = 255)
     private String descripcion;
 
-    @ColumnDefault("true")
-    @Column(name = "activo", nullable = false)
-    private Boolean activo = true;
-
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "creado_el", updatable = false, nullable = false)
-    private Instant creadoEl = Instant.now();
 
     @OneToMany(mappedBy = "permiso", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RolesPermiso> rolesPermisos = new LinkedHashSet<>();
@@ -58,22 +53,6 @@ public class Permiso implements Cloneable {
         this.descripcion = descripcion;
     }
 
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-
-    public Instant getCreadoEl() {
-        return creadoEl;
-    }
-
-    public void setCreadoEl(Instant creadoEl) {
-        this.creadoEl = creadoEl;
-    }
-
     public Set<RolesPermiso> getRolesPermisos() {
         return rolesPermisos;
     }
@@ -89,7 +68,7 @@ public class Permiso implements Cloneable {
         cloned.setClavePermiso(getClavePermiso());
         cloned.setDescripcion(getDescripcion());
         cloned.setActivo(getActivo());
-        cloned.setCreadoEl(getCreadoEl());
+        cloned.setFechaCreacion(getFechaCreacion());
         cloned.setRolesPermisos(getRolesPermisos());
         return cloned;
     }

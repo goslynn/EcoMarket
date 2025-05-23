@@ -32,13 +32,10 @@ public class PublicUsuarioController {
         return ResponseEntity.status(201).body(service.registrar(usuario));
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<UsuarioResponseDTO> login(@Valid @RequestBody UsuarioLoginRequestDTO usuario){
         return null;
     }
-
-
 
 
     /**
