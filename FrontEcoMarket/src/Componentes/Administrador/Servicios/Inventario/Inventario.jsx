@@ -5,16 +5,12 @@ import CardCrud from '../CardCrud'
 import { useState } from 'react'
 import TablaCrud from '../../TablasCrud'
 
-
 const Inventario = () => {
     const descProducto = "gestionar los productos disponibles en el sistema. Puedes crear, visualizar, editar o eliminar productos de manera eficiente."
     const descFamilia = "La sección de Familias permite administrar las categorías principales de productos.."
     const descSubFamilia = "Este módulo permite gestionar las subfamilias. Divisiones dentro de cada familia."
     const [navegacion, setNavegacion] = useState(0)
 
-const func =  ()=>{
-
-}
 
 const CardFiltros = ({ text, onclick }) => {
     return (
@@ -50,7 +46,7 @@ const CardFiltros = ({ text, onclick }) => {
                   <input type="text" placeholder='Buscar Producto' className='form-control' />
               </div>
               <div className="col-12 col-sm-6 col-md-3 text-sm-end">
-                <button className="btn btn-success w-100" onClick={func}>
+                <button className="btn btn-success w-100" >
                   { text }
                 </button>
               </div>
@@ -93,7 +89,7 @@ const CardFiltros = ({ text, onclick }) => {
         case 2:
             return (
                 <div className='container'>
-                    <CardFiltros /> 
+                    <CardFiltros text={"Crear"}/> 
                     <TablaCrud tipo={3} />
                 </div>
             )
@@ -101,8 +97,8 @@ const CardFiltros = ({ text, onclick }) => {
         case 3:
             return (
                 <div className='container'>
-                    <CardFiltros /> 
-                    <TablaCrud tipo={3} />
+                    <CardFiltros text={"Crear"}/> 
+                    <TablaCrud tipo={4} />
                 </div>
             )
              break
