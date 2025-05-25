@@ -22,7 +22,7 @@ public class RolesPermiso {
     private Permiso permiso;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "asignado_el", nullable = false)
+    @Column(name = "fecha_creacion", nullable = false)
     private Instant asignadoEl = Instant.now();
 
 

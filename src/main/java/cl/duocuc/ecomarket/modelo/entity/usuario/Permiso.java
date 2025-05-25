@@ -28,13 +28,14 @@ public class Permiso implements Cloneable {
     private Boolean activo = true;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "creado_el", updatable = false, nullable = false)
+    @Column(name = "fecha_creacion", updatable = false, nullable = false)
     private Instant creadoEl = Instant.now();
 
     @OneToMany(mappedBy = "permiso", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RolesPermiso> rolesPermisos = new LinkedHashSet<>();
 
     public Integer getId() {
+
         return id;
     }
 
@@ -82,15 +83,16 @@ public class Permiso implements Cloneable {
         this.rolesPermisos = rolesPermisos;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        Permiso cloned = (Permiso) super.clone();
-        cloned.setId(getId());
-        cloned.setClavePermiso(getClavePermiso());
-        cloned.setDescripcion(getDescripcion());
-        cloned.setActivo(getActivo());
-        cloned.setCreadoEl(getCreadoEl());
-        cloned.setRolesPermisos(getRolesPermisos());
-        return cloned;
-    }
+//    @Override
+//    public Object clone() throws CloneNotSupportedException {
+//        Permiso cloned = (Permiso) super.clone();
+//        cloned.setId(getId());
+//        cloned.setClavePermiso(getClavePermiso());
+//        cloned.setClavePermiso(getClavePermiso());
+//        cloned.setDescripcion(getDescripcion());
+//        cloned.setActivo(getActivo());
+//        cloned.setCreadoEl(getCreadoEl());
+//        cloned.setRolesPermisos(getRolesPermisos());
+//        return cloned;
+//    }
 }

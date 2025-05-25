@@ -28,7 +28,7 @@ public class Rol {
     private Boolean activo = true;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "creado_el", updatable = false, nullable = false)
+    @Column(name = "fecha_creacion", updatable = false, nullable = false)
     private Instant creadoEl = Instant.now();
 
     @OneToMany(mappedBy = "rol", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -82,4 +82,6 @@ public class Rol {
     public void setRolesPermisos(Set<RolesPermiso> rolesPermisos) {
         this.rolesPermisos = rolesPermisos;
     }
+
+
 }

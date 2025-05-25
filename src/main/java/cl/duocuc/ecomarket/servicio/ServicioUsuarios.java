@@ -9,6 +9,7 @@ import cl.duocuc.ecomarket.modelo.mapper.RolMapper;
 import cl.duocuc.ecomarket.modelo.mapper.UsuarioMapper;
 import cl.duocuc.ecomarket.modelo.repository.PermisoRepository;
 import cl.duocuc.ecomarket.modelo.repository.RolRepository;
+import cl.duocuc.ecomarket.modelo.repository.RolesPermisoRepository;
 import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
@@ -30,17 +31,24 @@ public class ServicioUsuarios {
     private final UsuarioRepository userRepo;
     private final RolRepository rolRepo;
     private final PermisoRepository permisoRepo;
+    private final RolesPermisoRepository rolesPermisoRepo;
+
     @PersistenceContext
     private EntityManager em;
     private final EncriptadorChetado encriptador = new EncriptadorChetado();
     private PersistenciaSP persistencia;
     private static final Logger log = LoggerFactory.getLogger(ServicioUsuarios.class);
 
-    public ServicioUsuarios(UsuarioRepository userRepo, RolRepository rolRepo, PermisoRepository permisoRepo) {
+    public ServicioUsuarios(UsuarioRepository userRepo,
+                            RolRepository rolRepo,
+                            PermisoRepository permisoRepo,
+                            RolesPermisoRepository rolesPermisoRepo) {
         this.userRepo = userRepo;
         this.rolRepo = rolRepo;
         this.permisoRepo = permisoRepo;
+        this.rolesPermisoRepo = rolesPermisoRepo;
     }
+
 
     @PostConstruct
     public void init() {
@@ -54,48 +62,6 @@ public class ServicioUsuarios {
                        .filter(Usuario::getActivo)
                        .map(UsuarioMapper::getResponseDTO)
                        .orElseThrow(() -> new ApiException(404, String.format("el usuario con id {%d} no existe", id))
-        );
-    }
-
-    public RolDTO obtenerRol(Integer id) throws ApiException{
-        return rolRepo.findById(id)
-                .filter(Rol::getActivo)
-                .map(RolMapper::toDTO)
-                .orElseThrow(() -> new ApiException(404, String.format("el rol con id {%d} no existe", id)));
-    }
-
-    public List<RolDTO> obtenerRoles() throws ApiException{
-        List<Rol> roles = rolRepo.findAll().stream().filter(Rol::getActivo).toList();
-        if (roles.isEmpty()){
-            throw new ApiException(404, "no existen roles");
-        }
-        return roles.stream().map(RolMapper::toDTO).toList();
-    }
-
-    public List<PermisoResponseDTO> obtenerPermisos() throws ApiException{
-        List<Permiso> permisos = permisoRepo.findAll().stream().filter(Permiso::getActivo).toList();
-        if (permisos.isEmpty()){
-            throw new ApiException(404, "no existen permisos");
-        }
-        return permisos.stream().map(PermisoMapper::toResponseDTO).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public RolPermisosDTO obtenerRolPermisos(Integer id) throws ApiException {
-        Rol rol = rolRepo.findWithPermisosById(id)
-                .orElseThrow(() -> new ApiException(404, String.format("El rol con ID %d no existe", id)));
-
-        List<PermisoResponseDTO> permisos = rol.getRolesPermisos().stream()
-                .map(RolesPermiso::getPermiso)
-                .filter(Permiso::getActivo)
-                .map(PermisoMapper::toResponseDTO)
-                .toList();
-
-        return new RolPermisosDTO(
-                rol.getId(),
-                rol.getNombreRol(),
-                rol.getDescripcion(),
-                permisos
         );
     }
 
@@ -187,36 +153,6 @@ public class ServicioUsuarios {
     }
 
 
-    @Transactional
-    public RolPermisosResponseDTO update(Integer id, RolPermisosRequestDTO rolPermisos) throws ApiException {
-        Rol rol = rolRepo.findWithPermisosById(id)
-                         .orElseThrow(() -> new ApiException(404, String.format("El rol con ID %d no existe", id)));
-
-        rol.setNombreRol(rolPermisos.nombre());
-        rol.setDescripcion(rolPermisos.descripcion());
-
-        List<Permiso> nuevosPermisos = permisoRepo.findAllById(rolPermisos.permisos());
-
-        log.info("Nuevos permisos: {}", nuevosPermisos.size());
-
-        for (Permiso permiso : nuevosPermisos) {
-            RolesPermiso rp = new RolesPermiso();
-            rp.setRol(rol);
-            rp.setPermiso(permiso);
-            rp.setId(new RolesPermisoId(rol.getId(), permiso.getId()));
-            rol.getRolesPermisos().add(rp);
-        }
-
-        rolRepo.save(rol);
-
-        return new RolPermisosResponseDTO(
-                rol.getId(),
-                rol.getNombreRol(),
-                rol.getDescripcion(),
-                nuevosPermisos.stream().map(PermisoMapper::toResponseDTO).toList()
-        );
-    }
-
 
     public void desactivarUsuario(Integer id){
         if (!userRepo.existsById(id)){
@@ -228,8 +164,104 @@ public class ServicioUsuarios {
         });
     }
 
-    public void desactivarRol(Long id){
+//    public void desactivarRol(Long id){
+//
+//    }
 
+
+
+
+
+
+
+    @Transactional
+    public RolDTO crearRol(RolPermisosRequestDTO dto) throws ApiException {
+        Rol rol = new Rol();
+        rol.setNombreRol(dto.nombre());
+        rol.setDescripcion(dto.descripcion());
+        rol = rolRepo.save(rol);
+
+        for (Integer idPermiso : dto.permisos()) {
+            Permiso permiso = permisoRepo.findById(idPermiso)
+                    .orElseThrow(() -> new ApiException(404, "Permiso con ID " + idPermiso + " no encontrado"));
+            RolesPermiso rp = new RolesPermiso();
+            rp.setId(new RolesPermisoId(Math.toIntExact(rol.getId()), Math.toIntExact(permiso.getId())));
+            rp.setRol(rol);
+            rp.setPermiso(permiso);
+            rolesPermisoRepo.save(rp);
+        }
+
+        return RolMapper.toDTO(rol);
     }
+
+    @Transactional(readOnly = true)
+    public RolPermisosResponseDTO obtenerRolConPermisos(Integer id) throws ApiException {
+        Rol rol = rolRepo.findById(Math.toIntExact(id))
+                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
+
+        List<PermisoResponseDTO> permisos = rolesPermisoRepo.findAllByRol_Id(Math.toIntExact(id)).stream()
+                .map(rp -> PermisoMapper.toResponseDTO(rp.getPermiso()))
+                .toList();
+
+        return new RolPermisosResponseDTO(rol.getId(), rol.getNombreRol(), rol.getDescripcion(), permisos);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RolDTO> obtenerTodosLosRoles() throws ApiException {
+        List<Rol> roles = rolRepo.findAll().stream().filter(Rol::getActivo).toList();
+        if (roles.isEmpty()) {
+            throw new ApiException(404, "No existen roles");
+        }
+        return roles.stream().map(RolMapper::toDTO).toList();
+    }
+
+    @Transactional
+    public void eliminarRol(Integer id) throws ApiException {
+        if (!rolRepo.existsById(id)) {
+            throw new ApiException(404, "El rol no existe");
+        }
+        rolRepo.deleteById(id);
+    }
+
+    @Transactional
+    public void actualizarRol(Integer id, RolPermisosRequestDTO dto) throws ApiException {
+        Rol rol = rolRepo.findById(id)
+                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
+
+        rol.setNombreRol(dto.nombre());
+        rol.setDescripcion(dto.descripcion());
+        rolRepo.save(rol);
+
+        rolesPermisoRepo.deleteAll(rolesPermisoRepo.findAllByRol_Id(id));
+
+        for (Integer idPermiso : dto.permisos()) {
+            Permiso permiso = permisoRepo.findById(idPermiso)
+                    .orElseThrow(() -> new ApiException(404, "Permiso con ID " + idPermiso + " no encontrado"));
+            RolesPermiso rp = new RolesPermiso();
+            rp.setId(new RolesPermisoId(id, idPermiso));
+            rp.setRol(rol);
+            rp.setPermiso(permiso);
+            rolesPermisoRepo.save(rp);
+        }
+    }
+
+    @Transactional
+    public void agregarPermisoARol(Integer idRol, Integer idPermiso) throws ApiException {
+        Rol rol = rolRepo.findById(idRol)
+                .orElseThrow(() -> new ApiException(404, "Rol no encontrado"));
+        Permiso permiso = permisoRepo.findById(idPermiso)
+                .orElseThrow(() -> new ApiException(404, "Permiso no encontrado"));
+        RolesPermiso rp = new RolesPermiso();
+        rp.setId(new RolesPermisoId(idRol, idPermiso));
+        rp.setRol(rol);
+        rp.setPermiso(permiso);
+        rolesPermisoRepo.save(rp);
+    }
+
+    @Transactional
+    public void quitarPermisoARol(Integer idRol, Integer idPermiso) throws ApiException {
+        rolesPermisoRepo.deleteByRol_IdAndPermiso_Id(idRol, idPermiso);
+    }
+
 
 }

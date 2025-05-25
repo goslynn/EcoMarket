@@ -4,8 +4,7 @@ import cl.duocuc.ecomarket.util.validacion.Requerido;
 
 import java.util.List;
 
-public record RolPermisosRequestDTO (
-
+public record RolPermisosRequestDTO(
         @Requerido
         String nombre,
 

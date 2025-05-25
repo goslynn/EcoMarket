@@ -4,7 +4,6 @@ import cl.duocuc.ecomarket.util.validacion.Requerido;
 import jakarta.validation.constraints.NotNull;
 
 public record PermisoResponseDTO(
-
         @NotNull(message = "El id no puede ser nulo")
         Integer id,
 
@@ -13,3 +12,4 @@ public record PermisoResponseDTO(
 
         String descripcion
 ) {}
+

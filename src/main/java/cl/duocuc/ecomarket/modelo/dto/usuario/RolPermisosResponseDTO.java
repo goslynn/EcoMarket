@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record RolPermisosResponseDTO(
-
         @NotNull(message = "El id no puede ser nulo")
         Integer id,
 
@@ -18,3 +17,4 @@ public record RolPermisosResponseDTO(
 
         List<PermisoResponseDTO> permisos
 ) {}
+
