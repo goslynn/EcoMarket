@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useFetch } from "./useFetch";
 import Skeleton from "react-loading-skeleton";
 import ModalEliminar from "../ModalEliminar.jsx";
+import axios from "axios";
 
 const TablaUsuarios = ({ tipo }) => {
   const [cargando, setCargando] = useState(true);
   const [mostrar, setMostrar] = useState(false);
+  const [actualizar, setActualizar] = useState(false);
   const [elementoSeleccionado, setElementoSeleccionado] = useState(null);
 
   const usuarios = useFetch("http://localhost:8080/api/v1/public/usuario/getusuarios");

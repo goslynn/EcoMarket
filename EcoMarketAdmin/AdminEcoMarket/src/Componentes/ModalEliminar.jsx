@@ -1,15 +1,19 @@
 
 import axios from 'axios';
+import { useEffect } from 'react';
+import { use } from 'react';
 
-const ModalEliminar = ({ cerrar, item, tipo }) => {
+const ModalEliminar = ({ cerrar, item }) => {  
   const handleConfirmar = () => {
-    axios.delete('http://localhost:8080/api/v1/public/inventario/producto/' + item.id_producto)
-      .then(response => {
-        console.log('Elemento eliminado:', response.data);
-      })
-      .catch(error => {
-        console.error('Error al eliminar:', error);
-      });
+    useEffect(() => {
+      axios.delete(`http://localhost:8080/api/v1/public/inventario/producto/${item.idProducto}`)
+        .then(response => {
+          console.log('Elemento eliminado:', response.data);
+        })
+        .catch(error => {
+          console.error('Error al eliminar:', error);
+        });
+      }, []);
     cerrar();
   };
 

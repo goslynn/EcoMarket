@@ -55,11 +55,11 @@ const CardFiltros = ({ text, onclick }) => {
         </div>
       </div>
     );
-    };
+    };  
     const NavElementos = () => {
         return (
             <div className='row gap-3 d-flex justify-content-center'>
-                <div className='col-9 d-flex justify-content-center'>  
+                <div className='col-9 d-flex justify-content-center w-75'>  
                     <CardCrud titulo={"Producto"} desc={descProducto} icono={producto} cambio={()=>{setNavegacion(1)}}/>
                 </div>
                 <div className='col-5'>  
@@ -69,40 +69,9 @@ const CardFiltros = ({ text, onclick }) => {
                     <CardCrud titulo={"Sub-Familia de producto"} desc={descSubFamilia} icono ={subfamilia} cambio={()=>{setNavegacion(3)}}/>
                 </div>
             </div>
+            
         )
     }
 
-    switch(navegacion){
-        case 0:
-            console.log(navegacion)
-            return <NavElementos/>
-            break
-        case 1:
-            
-            return (
-                <div className='container'>
-                    <CardFiltros text={"Crear"}/> 
-                    <TablaCrud tipo={2} />
-                </div>
-            )
-            break
-        case 2:
-            return (
-                <div className='container'>
-                    <CardFiltros text={"Crear"}/> 
-                    <TablaCrud tipo={3} />
-                </div>
-            )
-             break
-        case 3:
-            return (
-                <div className='container'>
-                    <CardFiltros text={"Crear"}/> 
-                    <TablaCrud tipo={4} />
-                </div>
-            )
-             break
-    }
-    
 }
 export default Inventario

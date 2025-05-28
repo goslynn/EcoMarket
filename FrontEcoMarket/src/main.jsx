@@ -20,6 +20,7 @@ import Administrador from './Routes/Administrador.jsx';
 import Sucursal from './Componentes/Administrador/Servicios/Sucursal.jsx';
 import Informes from './Componentes/Administrador/Servicios/Informes.jsx';
 import Usuarios from './Componentes/Administrador/Servicios/Usuarios.jsx';
+import ListarProductos from './Componentes/Administrador/Servicios/Inventario/ListarProductos.jsx';
 
 const router = createBrowserRouter([    
   {
@@ -97,7 +98,7 @@ const router = createBrowserRouter([
       },
       {
         path: "inventario/productos",
-        element: <h1>sub ruta productos</h1>,
+        element: <><ListarProductos/></>,
       },
           {
           path: "inventario/familias",
