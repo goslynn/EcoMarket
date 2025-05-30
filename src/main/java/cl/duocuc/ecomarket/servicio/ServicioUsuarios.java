@@ -173,6 +173,7 @@ public class ServicioUsuarios {
                 u.fechaContratacion(),
                 u.cargoEmpleado(),
                 u.areaEmpleado());
+
         return new CodigoDescripcion<>() {
             @Override
             public Integer getCodigo() {

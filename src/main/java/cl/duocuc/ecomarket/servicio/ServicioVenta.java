@@ -1,13 +1,11 @@
 package cl.duocuc.ecomarket.servicio;
 
 import cl.duocuc.ecomarket.funcional.CalculaMonto;
-import cl.duocuc.ecomarket.modelo.dto.venta.VentaDTO;
-import cl.duocuc.ecomarket.modelo.dto.venta.VentaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.venta.PeticionVentaDTO;
+import cl.duocuc.ecomarket.modelo.dto.venta.RespuestaVentaDTO;
 import cl.duocuc.ecomarket.modelo.entity.venta.DetalleVenta;
 import cl.duocuc.ecomarket.modelo.entity.venta.Venta;
-import cl.duocuc.ecomarket.modelo.mapper.VentaMapper;
 import cl.duocuc.ecomarket.modelo.repository.DetalleVentaRepository;
-import cl.duocuc.ecomarket.modelo.repository.ProductoRepository;
 import cl.duocuc.ecomarket.modelo.repository.VentaRepository;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.LineaDetalle;
@@ -23,24 +21,22 @@ import java.util.stream.Collectors;
 public class ServicioVenta {
     private final VentaRepository ventaRepo;
     private final DetalleVentaRepository detalleRepo;
-    private final ProductoRepository productoRepo;
     private final ServicioInventario inventario;
 
-    public ServicioVenta(VentaRepository venaRepo, DetalleVentaRepository detalleRepo, ServicioInventario inventario, ProductoRepository productoRepo) {
+    public ServicioVenta(VentaRepository venaRepo, DetalleVentaRepository detalleRepo, ServicioInventario inventario) {
         this.ventaRepo = venaRepo;
         this.detalleRepo = detalleRepo;
         this.inventario = inventario;
-        this.productoRepo = productoRepo;
     }
 
-    public VentaResponseDTO obtenerVenta(Integer id) throws ApiException {
+    public RespuestaVentaDTO obtenerVenta(Integer id) throws ApiException {
         Venta v = ventaRepo.findById(id).filter(Venta::getActivo).orElseThrow(
                 () -> new ApiException(404, String.format("La venta con ID %d no existe", id))
         );
-        return VentaMapper.toResponseDTO(v);
+        return RespuestaVentaDTO.fromEntidad(v);
     }
 
-    public CodigoDescripcion<Integer, String> registrarVenta(VentaDTO venta) {
+    public CodigoDescripcion<Number, String> registrarVenta(PeticionVentaDTO venta) {
         final Venta registroVenta = new Venta();
         final List<DetalleVenta> registroDetalle = new ArrayList<>();
 
@@ -53,7 +49,7 @@ public class ServicioVenta {
         //Extraer los datos a la interfaz que usa la clase CalculaMonto
         List<LineaDetalle> lineas = venta.items().stream().map(item -> new LineaDetalle() {
             @Override
-            public Integer getCantidad() {
+            public Long getCantidad() {
                 return item.cantidad();
             }
 
@@ -75,7 +71,7 @@ public class ServicioVenta {
         venta.items().forEach(item ->{
            DetalleVenta det = new DetalleVenta();
            det.setIdVenta(registroVenta);
-           det.setIdProducto(productoRepo.getReferenceById(item.idProducto()));
+           det.setIdProducto(item.idProducto());
            det.setCantidad(item.cantidad());
            det.setPrecioUnitario(item.precioUnitario());
            registroDetalle.add(det);
@@ -83,17 +79,7 @@ public class ServicioVenta {
 
         detalleRepo.saveAll(registroDetalle);
 
-        return new CodigoDescripcion<>() {
-            @Override
-            public Integer getCodigo() {
-                return registroVenta.getId();
-            }
-
-            @Override
-            public String getDescripcion() {
-                return "Venta registrada con éxito";
-            }
-        };
+        return RespuestaVentaDTO.fromEntidad(registroVenta);
     }
 
 

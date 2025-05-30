@@ -1,7 +1,7 @@
 package cl.duocuc.ecomarket.control.venta;
 
-import cl.duocuc.ecomarket.modelo.dto.venta.VentaDTO;
-import cl.duocuc.ecomarket.modelo.dto.venta.VentaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.venta.PeticionVentaDTO;
+import cl.duocuc.ecomarket.modelo.dto.venta.RespuestaVentaDTO;
 import cl.duocuc.ecomarket.servicio.ServicioVenta;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import jakarta.validation.Valid;
@@ -18,12 +18,12 @@ public class PublicVentaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VentaResponseDTO> consultarVenta(@PathVariable Integer id){
+    public ResponseEntity<RespuestaVentaDTO> consultarVenta(@PathVariable Integer id){
         return ResponseEntity.ok(servicio.obtenerVenta(id));
     }
 
     @PostMapping
-    public ResponseEntity<CodigoDescripcion<Integer, String>> registrarVenta(@Valid @RequestBody VentaDTO venta){
+    public ResponseEntity<CodigoDescripcion<Number, String>> registrarVenta(@Valid @RequestBody PeticionVentaDTO venta){
         return ResponseEntity.ok(servicio.registrarVenta(venta));
     }
 
