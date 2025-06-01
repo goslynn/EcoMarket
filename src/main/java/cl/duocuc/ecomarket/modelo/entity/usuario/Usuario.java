@@ -1,5 +1,6 @@
 package cl.duocuc.ecomarket.modelo.entity.usuario;
 
+import cl.duocuc.ecomarket.modelo.entity.EntidadEcomarket;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,7 +10,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "usuario", schema = "usuario")
-public class Usuario {
+public class Usuario extends EntidadEcomarket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,14 +44,6 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_rol_usuario", nullable = false)
     private Rol Rol;
-
-    @Column(name = "fecha_creacion")
-    @ColumnDefault("now()")
-    private Instant fechaCreacion;
-
-    @Column(name = "activo")
-    @ColumnDefault("true")
-    private Boolean activo;
 
     public Integer getId() {
         return id;
@@ -108,20 +101,5 @@ public class Usuario {
         this.Rol = idRolUsuario;
     }
 
-    public Instant getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Instant fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
 
 }

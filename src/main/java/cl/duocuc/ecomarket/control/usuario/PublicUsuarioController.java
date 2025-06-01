@@ -5,12 +5,10 @@ import cl.duocuc.ecomarket.modelo.dto.usuario.*;
 import cl.duocuc.ecomarket.modelo.dto.usuario.signup.*;
 import cl.duocuc.ecomarket.servicio.ServicioUsuarios;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
-import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,58 +17,64 @@ import java.util.List;
 @RequestMapping("/api/v1/public/user")
 public class PublicUsuarioController {
     private final ServicioUsuarios service;
-    private final ServicioUsuarios servicio;
-
     private static final Logger log = LoggerFactory.getLogger(PublicUsuarioController.class);
     public PublicUsuarioController(ServicioUsuarios service){
         this.service = service;
-        this.servicio = service;
     }
 
-//---------------------------------//
-// Roles nuevos
-//---------------------------------//
-
-    @PostMapping("/rol")
-    public ResponseEntity<RolDTO> crearRol(@Valid @RequestBody RolPermisosRequestDTO dto) throws ApiException {
-        return ResponseEntity.status(201).body(servicio.crearRol(dto));
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> consultar(@PathVariable Integer id){
+        return ResponseEntity.ok(service.obtenerUsuario(id));
     }
 
-    @GetMapping("/rol")
-    public ResponseEntity<List<RolDTO>> listarRoles() throws ApiException {
-        return ResponseEntity.ok(servicio.obtenerTodosLosRoles());
+    @PostMapping("/signup")
+    public ResponseEntity<UsuarioResponseDTO> crear(@Valid @RequestBody ClienteRegistroDTO usuario){
+        return ResponseEntity.status(201).body(service.registrar(usuario));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioResponseDTO> login(@Valid @RequestBody UsuarioLoginRequestDTO usuario){
+        return null;
+    }
+
+
+    /**
+     * Este es el put que hace la el json insert el update ya nose que mas poner vivan las goticas.
+     * eso.
+     * @param id
+     * @param usuario
+     * @return
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<CodigoDescripcion<Integer,String>> actualizar(@PathVariable Integer id, @RequestBody UsuarioUpdateRequestDTO usuario) {
+        return ResponseEntity.ok(service.actualizar(id, usuario));
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> desactivar(@PathVariable Integer id){
+        service.desactivarUsuario(id);
+        return ResponseEntity.status(204).body(String.format("Usuario %d eliminado correctamente", id));
     }
 
     @GetMapping("/rol/{id}")
-    public ResponseEntity<RolPermisosResponseDTO> consultarRol(@PathVariable Integer id) throws ApiException {
-        return ResponseEntity.ok(servicio.obtenerRolConPermisos(id));
+    public ResponseEntity<RolDTO> consultarRol(@PathVariable Integer id){
+        return ResponseEntity.ok(service.obtenerRol(id));
     }
 
-    @PutMapping("/rol/{id}")
-    public ResponseEntity<String> actualizarRol(@PathVariable Integer id,
-                                                @Valid @RequestBody RolPermisosRequestDTO dto) throws ApiException {
-        servicio.actualizarRol(id, dto);
-        return ResponseEntity.ok(String.format("Rol %d actualizado correctamente", id));
+    @GetMapping("/rol")
+    public ResponseEntity<List<RolDTO>> consultarRoles(){
+        return ResponseEntity.ok(service.obtenerRoles());
     }
 
-    @DeleteMapping("/rol/{id}")
-    public ResponseEntity<String> eliminarRol(@PathVariable Integer id) throws ApiException {
-        servicio.eliminarRol(id);
-        return ResponseEntity.status(204).body(String.format("Rol %d eliminado correctamente", id));
+    @GetMapping("/permiso")
+    public ResponseEntity<List<PermisoResponseDTO>> consultarPermisos(){
+        return ResponseEntity.ok(service.obtenerPermisos());
     }
 
-    @PostMapping("/rol/{idRol}/permisos/{idPermiso}")
-    public ResponseEntity<String> agregarPermisoARol(@PathVariable Integer idRol,
-                                                     @PathVariable Integer idPermiso) throws ApiException {
-        servicio.agregarPermisoARol(idRol, idPermiso);
-        return ResponseEntity.ok(String.format("Permiso %d agregado al rol %d", idPermiso, idRol));
-    }
-
-    @DeleteMapping("/rol/{idRol}/permisos/{idPermiso}")
-    public ResponseEntity<String> quitarPermisoDeRol(@PathVariable Integer idRol,
-                                                     @PathVariable Integer idPermiso) throws ApiException {
-        servicio.quitarPermisoARol(idRol, idPermiso);
-        return ResponseEntity.ok(String.format("Permiso %d removido del rol %d", idPermiso, idRol));
+    @GetMapping("/rol/{id}/permiso")
+    public ResponseEntity<RolPermisosDTO> consultarPermisosRol(@PathVariable Integer id){
+        return ResponseEntity.ok(service.obtenerRolPermisos(id));
     }
 
 }

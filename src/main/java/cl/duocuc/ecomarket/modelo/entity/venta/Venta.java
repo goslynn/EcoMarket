@@ -1,5 +1,6 @@
 package cl.duocuc.ecomarket.modelo.entity.venta;
 
+import cl.duocuc.ecomarket.modelo.entity.EntidadEcomarket;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "venta", schema = "venta")
-public class Venta {
+public class Venta extends EntidadEcomarket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +32,6 @@ public class Venta {
     @NotNull
     @Column(name = "id_tipo_documento", nullable = false)
     private Integer idTipoDocumento;
-
-    @Column(name = "fecha_venta", insertable = false)
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    private Instant fechaVenta;
 
     @NotNull
     @Column(name = "total_neto", nullable = false, precision = 10, scale = 2)
@@ -59,10 +56,6 @@ public class Venta {
     @Column(name = "id_forma_pago", nullable = false)
     private Integer idFormaPago;
 
-    @Column(name = "activo", insertable = false)
-    @ColumnDefault("true")
-    private Boolean activo;
-
     @OneToMany(mappedBy = "idVenta")
     private Set<DetalleVenta> detalleVentas = new LinkedHashSet<>();
 
@@ -80,14 +73,6 @@ public class Venta {
 
     public void setIdCliente(Integer idCliente) {
         this.idCliente = idCliente;
-    }
-
-    public Instant getFechaVenta() {
-        return fechaVenta;
-    }
-
-    public void setFechaVenta(Instant fechaVenta) {
-        this.fechaVenta = fechaVenta;
     }
 
     public BigDecimal getTotalNeto() {
@@ -128,14 +113,6 @@ public class Venta {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
-    }
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
     }
 
     public Set<DetalleVenta> getDetalleVentas() {

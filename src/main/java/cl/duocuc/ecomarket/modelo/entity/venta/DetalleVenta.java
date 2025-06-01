@@ -17,7 +17,7 @@ public class DetalleVenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('venta.detalle_venta_id_detalle_venta_seq')")
     @Column(name = "id_detalle_venta", nullable = false)
-    private Integer id;
+    private Long id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -26,13 +26,12 @@ public class DetalleVenta {
     private Venta idVenta;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_producto", nullable = false)
-    private Producto idProducto;
+    private Long idProducto;
 
     @NotNull
     @Column(name = "cantidad", nullable = false)
-    private Integer cantidad;
+    private Long cantidad;
 
     @NotNull
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
@@ -42,11 +41,11 @@ public class DetalleVenta {
     @Column(name = "observaciones")
     private String observaciones;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -58,19 +57,19 @@ public class DetalleVenta {
         this.idVenta = idVenta;
     }
 
-    public Producto getIdProducto() {
+    public Long getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(Producto idProducto) {
+    public void setIdProducto(Long idProducto) {
         this.idProducto = idProducto;
     }
 
-    public Integer getCantidad() {
+    public Long getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(Integer cantidad) {
+    public void setCantidad(Long cantidad) {
         this.cantidad = cantidad;
     }
 
