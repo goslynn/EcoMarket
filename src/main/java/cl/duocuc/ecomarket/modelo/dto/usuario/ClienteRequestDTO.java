@@ -1,15 +1,19 @@
-package cl.duocuc.ecomarket.modelo.dto.usuario.signup;
+package cl.duocuc.ecomarket.modelo.dto.usuario;
 
 import cl.duocuc.ecomarket.modelo.dto.PeticionDTO;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
 import cl.duocuc.ecomarket.tipodatos.Genero;
 import cl.duocuc.ecomarket.util.validacion.FechaDB;
 import cl.duocuc.ecomarket.util.validacion.Requerido;
-import cl.duocuc.ecomarket.util.validacion.Rut;
+import cl.duocuc.ecomarket.util.validacion.Telefono;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-public record EmpleadoRegistroDTO (
+
+public record ClienteRequestDTO(
+
+        @Telefono
+        String telefono,
 
         @Requerido
         String nombre,
@@ -24,26 +28,18 @@ public record EmpleadoRegistroDTO (
         @Requerido
         String contrasena,
 
+
         Genero genero,
 
-        @Rut
-        String rut,
-
-        @FechaDB
-        String fechaContratacion,
-
-        @Requerido
-        String cargoEmpleado,
-
-        String AreaEmpleado,
 
         @NotNull(message = "El id de rol no puede ser nulo")
         Integer idRolUsuario
+
 ) implements PeticionDTO<Usuario> {
 
         @Override
         public Usuario toEntidad() {
                 return null;
-        }
+        };
 
 }

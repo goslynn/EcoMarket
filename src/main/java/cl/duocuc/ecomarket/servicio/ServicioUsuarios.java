@@ -3,9 +3,6 @@ package cl.duocuc.ecomarket.servicio;
 import cl.duocuc.ecomarket.modelo.PersistenciaSP;
 import cl.duocuc.ecomarket.modelo.dto.usuario.*;
 import cl.duocuc.ecomarket.modelo.entity.usuario.*;
-import cl.duocuc.ecomarket.modelo.dto.usuario.signup.*;
-import cl.duocuc.ecomarket.modelo.mapper.PermisoMapper;
-import cl.duocuc.ecomarket.modelo.mapper.RolMapper;
 import cl.duocuc.ecomarket.modelo.mapper.UsuarioMapper;
 import cl.duocuc.ecomarket.modelo.repository.PermisoRepository;
 import cl.duocuc.ecomarket.modelo.repository.RolRepository;
@@ -13,6 +10,7 @@ import cl.duocuc.ecomarket.modelo.repository.RolesPermisoRepository;
 import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
+import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
 import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.annotation.PostConstruct;
@@ -27,6 +25,7 @@ import java.util.List;
 
 @Service
 public class ServicioUsuarios {
+    public static final Encriptador<String> encriptador = new EncriptadorChetado();
 
     private final UsuarioRepository userRepo;
     private final RolRepository rolRepo;
@@ -35,7 +34,6 @@ public class ServicioUsuarios {
 
     @PersistenceContext
     private EntityManager em;
-    private final EncriptadorChetado encriptador = new EncriptadorChetado();
     private PersistenciaSP persistencia;
     private static final Logger log = LoggerFactory.getLogger(ServicioUsuarios.class);
 
@@ -73,7 +71,7 @@ public class ServicioUsuarios {
      * @return 'JSON' de respuesta para la api
      * @throws ApiException Error lanzado ante error de validacion o de ejecucion del procedimiento
      */
-    public UsuarioResponseDTO registrar(EmpleadoRegistroDTO e) throws ApiException {
+    public UsuarioResponseDTO registrar(EmpleadoRequestDTO e) throws ApiException {
         return persistencia.agregarUsuario(
                 null,  // Teléfono (no aplica para empleados)
                 e.nombre(),
@@ -98,7 +96,7 @@ public class ServicioUsuarios {
      * @return 'JSON' de respuesta para la api
      * @throws ApiException Error lanzado ante error de validacion o de ejecucion del procedimiento
      */
-    public UsuarioResponseDTO registrar(ClienteRegistroDTO c) throws ApiException {
+    public UsuarioResponseDTO registrar(ClienteRequestDTO c) throws ApiException {
         return persistencia.agregarUsuario(
                 c.telefono(),
                 c.nombre(),
@@ -122,11 +120,12 @@ public class ServicioUsuarios {
      * @param u
      * @throws ApiException
      */
-    public CodigoDescripcion<Integer,String> actualizar(Integer id, UsuarioUpdateRequestDTO u) throws ApiException {
+    public CodigoDescripcion<Integer,String> actualizar(Integer id, UsuarioRequestDTO u) throws ApiException {
         if (!userRepo.existsById(id)){
-            throw new RuntimeException("el usuario no existe");
+            throw new ApiException(404, "el usuario no existe");
         }
-        persistencia.actualizarUsuario(id,
+        persistencia.actualizarUsuario(
+                id,
                 u.nombre(),
                 u.correo(),
                 encriptador.encriptado(u.contrasenaHash()) ?
@@ -140,20 +139,8 @@ public class ServicioUsuarios {
                 u.cargoEmpleado(),
                 u.areaEmpleado());
 
-        return new CodigoDescripcion<>() {
-            @Override
-            public Integer getCodigo() {
-                return id;
-            }
-
-            @Override
-            public String getDescripcion() {
-                return "Usuario actualizado correctamente";
-            }
-        };
+        return CodigoDescripcion.of(id, "Usuario actualizado correctamente");
     }
-
-
 
     public void desactivarUsuario(Integer id){
         if (!userRepo.existsById(id)){
@@ -165,56 +152,44 @@ public class ServicioUsuarios {
         });
     }
 
-//    public void desactivarRol(Long id){
-//
-//    }
-
-
-
-
-
-
 
     @Transactional
     public RolDTO crearRol(RolPermisosRequestDTO dto) throws ApiException {
-        Rol rol = new Rol();
-        rol.setNombreRol(dto.nombre());
-        rol.setDescripcion(dto.descripcion());
-        rol = rolRepo.save(rol);
-
-        for (Integer idPermiso : dto.permisos()) {
-            Permiso permiso = permisoRepo.findById(idPermiso)
-                    .orElseThrow(() -> new ApiException(404, "Permiso con ID " + idPermiso + " no encontrado"));
-            RolesPermiso rp = new RolesPermiso();
-            rp.setId(new RolesPermisoId(Math.toIntExact(rol.getId()), Math.toIntExact(permiso.getId())));
-            rp.setRol(rol);
-            rp.setPermiso(permiso);
-            rolesPermisoRepo.save(rp);
-        }
-
-        return RolMapper.toDTO(rol);
+        Rol rol = dto.toEntidad();
+        rolRepo.save(rol);
+        rolesPermisoRepo.saveAll(rol.getRolesPermisos());
+        return RolDTO.fromEntidad(rol);
     }
 
-    @Transactional(readOnly = true)
-    public RolPermisosResponseDTO obtenerRolConPermisos(Integer id) throws ApiException {
-        Rol rol = rolRepo.findById(Math.toIntExact(id))
+    public RolDTO obtenerRol(Integer id)  {
+        return rolRepo.findById(id)
+                .map(RolDTO::fromEntidad)
+                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
+    }
+
+
+    //    @Transactional(readOnly = true)
+    public List<RolDTO> obtenerRoles() throws ApiException {
+        List<RolDTO> roles = rolRepo.findAll().stream()
+                                    .filter(Rol::getActivo)
+                                    .map(RolDTO::fromEntidad)
+                                    .toList();
+
+        if (roles.isEmpty()) {
+            throw new ApiException(404, "No hay roles activos disponibles.");
+        }
+
+        return roles;
+    }
+
+//    @Transactional(readOnly = true)
+    public RolPermisosResponseDTO obtenerRolPermisos(Integer id) throws ApiException {
+        Rol rol = rolRepo.findById(id)
                 .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
 
-        List<PermisoResponseDTO> permisos = rolesPermisoRepo.findAllByRol_Id(Math.toIntExact(id)).stream()
-                .map(rp -> PermisoMapper.toResponseDTO(rp.getPermiso()))
-                .toList();
-
-        return new RolPermisosResponseDTO(rol.getId(), rol.getNombreRol(), rol.getDescripcion(), permisos);
+        return RolPermisosResponseDTO.fromEntidad(rol);
     }
 
-    @Transactional(readOnly = true)
-    public List<RolDTO> obtenerTodosLosRoles() throws ApiException {
-        List<Rol> roles = rolRepo.findAll().stream().filter(Rol::getActivo).toList();
-        if (roles.isEmpty()) {
-            throw new ApiException(404, "No existen roles");
-        }
-        return roles.stream().map(RolMapper::toDTO).toList();
-    }
 
     @Transactional
     public void eliminarRol(Integer id) throws ApiException {
@@ -225,12 +200,19 @@ public class ServicioUsuarios {
     }
 
     @Transactional
-    public void actualizarRol(Integer id, RolPermisosRequestDTO dto) throws ApiException {
+    public CodigoDescripcion<Integer,String> actualizarRol(Integer id, RolPermisosRequestDTO dto) throws ApiException {
         Rol rol = rolRepo.findById(id)
                 .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
 
         rol.setNombreRol(dto.nombre());
         rol.setDescripcion(dto.descripcion());
+
+        /*
+        TODO: @HAPEMA refactorizar la forma de eliminar rolesPermiso iterando sobre el dto
+        e instanciando un objeto (id) RolesPermisoId, para luego eliminarlo, tal y como lo hace
+        mas abajo para guardar, que lo haga de la misma forma para borrar.
+         */
+
         rolRepo.save(rol);
 
         rolesPermisoRepo.deleteAll(rolesPermisoRepo.findAllByRol_Id(id));
@@ -244,25 +226,21 @@ public class ServicioUsuarios {
             rp.setPermiso(permiso);
             rolesPermisoRepo.save(rp);
         }
+        return CodigoDescripcion.of(id, "Rol actualizado correctamente");
     }
 
-    @Transactional
-    public void agregarPermisoARol(Integer idRol, Integer idPermiso) throws ApiException {
-        Rol rol = rolRepo.findById(idRol)
-                .orElseThrow(() -> new ApiException(404, "Rol no encontrado"));
-        Permiso permiso = permisoRepo.findById(idPermiso)
-                .orElseThrow(() -> new ApiException(404, "Permiso no encontrado"));
-        RolesPermiso rp = new RolesPermiso();
-        rp.setId(new RolesPermisoId(idRol, idPermiso));
-        rp.setRol(rol);
-        rp.setPermiso(permiso);
-        rolesPermisoRepo.save(rp);
-    }
 
-    @Transactional
-    public void quitarPermisoARol(Integer idRol, Integer idPermiso) throws ApiException {
-        rolesPermisoRepo.deleteByRol_IdAndPermiso_Id(idRol, idPermiso);
-    }
+    public List<PermisoResponseDTO> obtenerPermisos() throws ApiException{
+        List<PermisoResponseDTO> permisos = permisoRepo.findAll().stream()
+                                    .filter(Permiso::getActivo)
+                                    .map(PermisoResponseDTO::fromEntidad)
+                                    .toList();
 
+        if (permisos.isEmpty()) {
+            throw new ApiException(404, "No hay permisos activos disponibles.");
+        }
+
+        return permisos;
+    }
 
 }

@@ -1,6 +1,7 @@
 package cl.duocuc.ecomarket.servicio;
 
 import cl.duocuc.ecomarket.funcional.CalculaMonto;
+import cl.duocuc.ecomarket.modelo.dto.venta.DetalleVentaDTO;
 import cl.duocuc.ecomarket.modelo.dto.venta.PeticionVentaDTO;
 import cl.duocuc.ecomarket.modelo.dto.venta.RespuestaVentaDTO;
 import cl.duocuc.ecomarket.modelo.entity.venta.DetalleVenta;
@@ -21,12 +22,11 @@ import java.util.stream.Collectors;
 public class ServicioVenta {
     private final VentaRepository ventaRepo;
     private final DetalleVentaRepository detalleRepo;
-    private final ServicioInventario inventario;
+//    private final ServicioInventario inventario;
 
-    public ServicioVenta(VentaRepository venaRepo, DetalleVentaRepository detalleRepo, ServicioInventario inventario) {
+    public ServicioVenta(VentaRepository venaRepo, DetalleVentaRepository detalleRepo) {
         this.ventaRepo = venaRepo;
         this.detalleRepo = detalleRepo;
-        this.inventario = inventario;
     }
 
     public RespuestaVentaDTO obtenerVenta(Integer id) throws ApiException {
@@ -37,17 +37,33 @@ public class ServicioVenta {
     }
 
     public CodigoDescripcion<Number, String> registrarVenta(PeticionVentaDTO venta) {
-        final Venta registroVenta = new Venta();
+        final Venta registroVenta = venta.toEntidad();
         final List<DetalleVenta> registroDetalle = new ArrayList<>();
 
-        registroVenta.setIdCliente(venta.idCliente());
         registroVenta.setIdTipoDocumento(4); //Factura
         registroVenta.setIdEstadoVenta(6); //Pagada
-        registroVenta.setIdFormaPago(venta.idFormaPago());
-        registroVenta.setObservaciones(venta.observaciones());
 
-        //Extraer los datos a la interfaz que usa la clase CalculaMonto
-        List<LineaDetalle> lineas = venta.items().stream().map(item -> new LineaDetalle() {
+        CalculaMonto.Resultado r = delegarCalculoMontos(venta.items());
+
+        registroVenta.setTotalNeto(r.subtotal());
+        registroVenta.setTotalBruto(r.total());
+        registroVenta.setTotalIva(r.totalIva());
+
+        ventaRepo.save(registroVenta);
+
+        venta.items().forEach(item ->{
+           DetalleVenta det = item.toEntidad();
+           det.setIdVenta(registroVenta);
+           registroDetalle.add(det);
+        });
+
+        detalleRepo.saveAll(registroDetalle);
+
+        return RespuestaVentaDTO.fromEntidad(registroVenta);
+    }
+
+    private CalculaMonto.Resultado delegarCalculoMontos(List<DetalleVentaDTO> items) {
+        List<LineaDetalle> lineas = items.stream().map(item -> new LineaDetalle() {
             @Override
             public Long getCantidad() {
                 return item.cantidad();
@@ -59,27 +75,7 @@ public class ServicioVenta {
             }
         }).collect(Collectors.toList());
 
-        //Calcular los montos de la venta
-        CalculaMonto.Resultado r = CalculaMonto.calcular(lineas);
-
-        registroVenta.setTotalNeto(r.subtotal());
-        registroVenta.setTotalBruto(r.total());
-        registroVenta.setTotalIva(r.totalIva());
-
-        ventaRepo.save(registroVenta);
-
-        venta.items().forEach(item ->{
-           DetalleVenta det = new DetalleVenta();
-           det.setIdVenta(registroVenta);
-           det.setIdProducto(item.idProducto());
-           det.setCantidad(item.cantidad());
-           det.setPrecioUnitario(item.precioUnitario());
-           registroDetalle.add(det);
-        });
-
-        detalleRepo.saveAll(registroDetalle);
-
-        return RespuestaVentaDTO.fromEntidad(registroVenta);
+        return CalculaMonto.calcular(lineas);
     }
 
 

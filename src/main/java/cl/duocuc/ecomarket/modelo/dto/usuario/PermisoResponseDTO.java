@@ -8,16 +8,16 @@ import jakarta.validation.constraints.NotNull;
 
 public record PermisoResponseDTO(
 
-        @NotNull(message = "El id no puede ser nulo")
         Integer id,
 
         @Requerido
         String clave,
 
         String descripcion
+
 ) implements RespuestaDTO {
 
-        public static RespuestaDTO fromEntidad(Permiso p){
+        public static PermisoResponseDTO fromEntidad(Permiso p){
                 return new PermisoResponseDTO(
                         p.getId(),
                         p.getClavePermiso(),
@@ -32,7 +32,7 @@ public record PermisoResponseDTO(
 
         @Override
         public String getDescripcion() {
-                return descripcion;
+                return String.format("%s - %s", clave, descripcion);
         }
 
 

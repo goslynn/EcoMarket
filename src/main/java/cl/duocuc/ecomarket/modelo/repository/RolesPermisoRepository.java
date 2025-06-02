@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface RolesPermisoRepository extends JpaRepository<RolesPermiso, RolesPermisoId> {
     List<RolesPermiso> findAllByRol_Id(Integer idRol);
-    void deleteByRol_IdAndPermiso_Id(Integer idRol, Integer idPermiso);
 }
