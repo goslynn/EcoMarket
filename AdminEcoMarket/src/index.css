@@ -11,6 +11,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 body{
   padding-top:50px;
   height: 100%;
@@ -61,4 +62,8 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+.sidebar-item:hover .nav-link {
+  background-color: #8fe3b1 !important; /* Verde success claro */
+  color: #000 !important;    /* Texto negro */
 }

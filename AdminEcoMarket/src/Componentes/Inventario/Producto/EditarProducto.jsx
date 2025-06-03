@@ -1,24 +1,29 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { data } from 'react-router-dom';
 const EditarProducto = ({ produ, cerrar })  => {
 const [datosProducto, setDatosProducto] = useState({
-    id: produ.idProducto ,
-    nombre: produ.NombreProducto ,
-    sku: produ.CodigoProducto ,
-    subFamilia: produ.idSubFamilia,
-    descripcion: produ.Descripcion ,
-    precio: produ.Precio ,
-    estado: produ.Activo ,
+    idProducto: produ.idProducto ,
+    NombreProducto: produ.NombreProducto ,
+    CodigoProducto: produ.CodigoProducto ,
+    idSubFamilia: produ.idSubFamilia,
+    Descripcion: produ.Descripcion ,
+    Precio: produ.Precio ,
+    Activo: produ.Activo ,
   });
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDatosProducto({ ...datosProducto, [name]: value });
+  console.log(datosProducto); 
+  };
     const handleConfirmar = () => {
-        //axios.patch(`http://localhost:8080/api/v1/public/inventario/producto/${producto.idProducto}`)
-        //.then(response => {
-          //  console.log('Elemento eliminado:', response.data);
-        //})
-        //.catch(error => {
-          //  console.error('Error al eliminar:', error);
-        //});
+        axios.put(`http://localhost:8080/api/v1/public/inventario/producto/${datosProducto.idProducto}`,datosProducto)
+        .then(response => {
+          console.log('Elemento actualizado:', response.data);
+        })
+        .catch(error => {
+          console.error('Error al actualizado:', error);
+        });
         cerrar();
   };    
 
@@ -49,17 +54,18 @@ const [datosProducto, setDatosProducto] = useState({
                 type="button"
                 className="btn-close btn-close-white"
                 onClick={cerrar}
+                onChange={handleChange}
               ></button>
             </div>
             <div className="modal-body">
                         <form className="row g-3">
                         <div className="col-md-6">
                             <label  className="form-label">Nombre del producto</label>
-                            <input type="text" className="form-control" value={datosProducto.nombre}/>
+                            <input type="text" name='NombreProducto' className="form-control" value={datosProducto.NombreProducto} onChange={handleChange}/>
                         </div>
                         <div className="col-md-6">
                             <label  className="form-label">SKU:</label>
-                            <input type="text" className="form-control" value={datosProducto.sku} />
+                            <input type="text" name="CodigoProducto" className="form-control" value={datosProducto.CodigoProducto} onChange={handleChange}/>
                         </div>
                         <div className="col-md-6">
                             <label  className="form-label">Familia</label>
@@ -75,15 +81,15 @@ const [datosProducto, setDatosProducto] = useState({
                         </div>
                         <div className="col-md-12">
                             <label  className="form-label">Descripcion</label>
-                            <input type="text" className="form-control"value={datosProducto.descripcion}/>
+                            <input type="text" name='Descripcion' className="form-control"value={datosProducto.Descripcion} onChange={handleChange}/>
                         </div>
                         <div className="col-md-6">
                             <label  className="form-label">Precio</label>
-                            <input type="text" className="form-control" value={datosProducto.precio}/>
+                            <input type="text" name="Precio" className="form-control" value={datosProducto.Precio} onChange={handleChange}/>
                         </div>
                         <div className="col-md-6">
                             <label  className="form-label">Estado</label>
-                             <select id="inputState" className="form-select">
+                             <select name="Activo" id="inputState" className="form-select">
                                 <option>Activo</option>
                                 <option>Inactivo</option>
                             </select>

@@ -1,15 +1,19 @@
   import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import EditarProducto from './Componentes/Inventario/EditarProducto.jsx';
 import './index.css';
+import { useState } from 'react';
 
 // Componentes comunes
 
 import Dashboard from './Componentes/Administrador/Dashboard.jsx';
 import Administrador from './Routes/Administrador.jsx';
 import NotFound from './Routes/NotFound.jsx';
-import ListarProductos from './Componentes/Inventario/ListarProductos.jsx';
+import ListarProductos from './Componentes/Inventario/Producto/ListarProductos.jsx';
+import ListarFamilia from './Componentes/Inventario/Familia/ListarFamilia.jsx';
+import ListarSubFamilia from './Componentes/Inventario/SubFamilia/ListarSubFamilia.jsx';
+import CrearProducto from './Componentes/Inventario/Producto/CrearProducto.jsx';
+import CrearFamilia from './Componentes/Inventario/Familia/CrearFamilia.jsx';
 const router = createBrowserRouter([    
   {
     path: "",
@@ -24,7 +28,27 @@ const router = createBrowserRouter([
         path: "inventario/producto",
         element: <ListarProductos />,
       },
-
+      {
+        path: "inventario/producto/crear-producto",
+        element: <CrearProducto />,
+      },
+      {
+        path: "inventario/familia",
+        element: <ListarFamilia />,
+      },
+      {
+        path: "/inventario/familia/crear-familia",
+        element: <CrearFamilia />,
+      },
+      {
+        path: "inventario/subfamilia",
+        element: <ListarSubFamilia />,
+      },
+      {
+        path: "/inventario/subfamilia/crear-subfamilia",
+        element: <CrearFamilia />,
+      }
+      
     ]
   }
 ]);

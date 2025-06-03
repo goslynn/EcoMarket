@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import useFetch from '../useFetch'; 
-import ModalEliminar from "../ModalEliminar.jsx";
+import useFetch from '../../useFetch'; 
+import ModalEliminar from "../../ModalEliminar.jsx";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'; 
 import EditarProducto from './EditarProducto.jsx';
+import { Link } from 'react-router-dom';
 
 const ListarProductos = () => {
   const { data: productos, cargando: cargando } = useFetch("http://localhost:8080/api/v1/public/inventario/producto");
+  const { data: subfamilias, cargando: cargandoSubfamilias } = useFetch("http://localhost:8080/api/v1/public/inventario/subfamilia");
 
   const [mostrar, setMostrar] = useState(false);
   const [mostrarEdicion, setMostrarEdicion] = useState(false);
@@ -37,7 +39,7 @@ const ListarProductos = () => {
 const mostrarSkeleton = () => {
     if (cargando) {
         return (
-            <table className="table table-bordered table-dark table-hover mt-3">
+            <table className="table table-bordered table-success table-hover mt-3">
               <thead className="">
                 <tr>
                   {[...Array(8)].map((_, i) => (
@@ -86,6 +88,7 @@ const mostrarSkeleton = () => {
         <ModalEliminar
           cerrar={cerrarModal}
           item={producto}
+          op={1} // 1 para producto
         />
       )}
       {mostrarEdicion && (
@@ -95,7 +98,7 @@ const mostrarSkeleton = () => {
         />
       )}
 
-      <div className="container my-4 mt-5">
+      <div className="container my-4 mt-5  ">
         <div className="card">
           <div className="card-body">
             <h3 className="mb-3 display-5 fw-bold text-success">Filtrar por:</h3>
@@ -104,12 +107,14 @@ const mostrarSkeleton = () => {
                 <input type="text" placeholder='Buscar Producto' className='form-control' />
               </div>
               <div className="col-12 col-sm-6 col-md-3">
-                <select className="form-select" aria-label="Filtrar categoría">
-                  <option>Categoría</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-                </select>
+              <select className="form-select" name="idFamilia" >
+                <option value="">Seleccione una familia...</option>
+                {subfamilias && subfamilias.map((sub) => (
+                  <option key={sub.id_subfamilia} value={sub.id_subfamilia}>
+                    {sub.nombre_subfamilia}
+                  </option>
+                ))}
+              </select>
               </div>
               <div className="col-12 col-sm-6 col-md-3">
                 <select className="form-select" aria-label="Filtrar precio">
@@ -119,22 +124,24 @@ const mostrarSkeleton = () => {
                 </select>
               </div>
               <div className="col-12 col-sm-6 col-md-3 text-sm-end">
-                <button className="btn btn-success w-100" onClick={handleCrear}>
+                <a className="btn btn-success w-100" href="/inventario/producto/crear-producto">
                   Crear
-                </button>
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
       {cargando ? mostrarSkeleton() : 
-      <table className="table table-bordered table-dark table-hover mt-3">
+      <table className="table table-bordered table-success table-hover mt-3">
         <thead>
           <tr>
             <th>#</th>
             <th>Código</th>
             <th>Nombre</th>
-            <th>Descripción</th>
+<th style={{ maxWidth: '100px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+  Descripción
+</th>
             <th>Precio</th>
             <th>Subfamilias</th>
             <th>Activo</th>
@@ -151,7 +158,7 @@ const mostrarSkeleton = () => {
               <td>{produ.Precio}</td>
               <td>{produ.idSubFamilia}</td>
               <td>{produ.Activo ? "Sí" : "No"}</td>
-              <td>
+              <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 <button className="btn btn-success" onClick={() => mostrarModalEditar(produ)}>Editar</button>
                 <button className="btn btn-danger ms-2" onClick={() => mostrarModal(produ)}>Borrar</button>
               </td>

@@ -1,25 +1,27 @@
-
 import axios from 'axios';
-import { useEffect } from 'react';
-import { use } from 'react';
 
-const ModalEliminar = ({ cerrar, item }) => {  
-  const handleConfirmar = () => {
-    useEffect(() => {
-      axios.delete(`http://localhost:8080/api/v1/public/inventario/producto/${item.idProducto}`)
-        .then(response => {
-          console.log('Elemento eliminado:', response.data);
-        })
-        .catch(error => {
-          console.error('Error al eliminar:', error);
-        });
-      }, []);
-    cerrar();
+const ModalEliminar = ({ cerrar, item, op }) => {  
+  const handleConfirmar = async () => {
+    try {
+      if (op === 1) {
+        await axios.delete(`http://localhost:8080/api/v1/public/inventario/producto/${item.idProducto}`);
+        console.log('Producto eliminado');
+      } else if (op === 2) {
+        await axios.delete(`http://localhost:8080/api/v1/public/inventario/familia/${item.id_familia}`);
+        console.log('Familia eliminada');
+      } else if (op === 3) {
+        await axios.delete(`http://localhost:8080/api/v1/public/inventario/subfamilia/${item.id_subfamilia}`);
+        console.log('Subfamilia eliminada');
+      }
+    } catch (error) {
+      console.error('Error al eliminar:', error);
+    } finally {
+      cerrar();
+    }
   };
 
   return (
     <>
-      {/* Fondo desenfocado */}
       <div
         className="position-fixed top-0 start-0 w-100 h-100"
         style={{
@@ -28,8 +30,6 @@ const ModalEliminar = ({ cerrar, item }) => {
           zIndex: 1040,
         }}
       />
-
-      {/* Modal Bootstrap conservado */}
       <div
         className="modal show d-block"
         tabIndex="-1"
