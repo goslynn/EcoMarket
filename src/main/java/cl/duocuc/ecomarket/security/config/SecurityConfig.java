@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.config;
+package cl.duocuc.ecomarket.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
