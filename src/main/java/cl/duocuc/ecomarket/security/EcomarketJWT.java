@@ -1,6 +1,7 @@
 package cl.duocuc.ecomarket.security;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,9 @@ public class EcomarketJWT implements ProveedorJWT{
 
     private final JwtEncoder encoder;
     private final JwtDecoder decoder;
-    private static final long EXPIRATION = 3600;
+
+    @Value("${jwt.expiration.ms}")
+    private long expirationMs;
 
     public EcomarketJWT(JwtEncoder encoder, JwtDecoder decoder) {
         this.encoder = encoder;
@@ -23,7 +26,7 @@ public class EcomarketJWT implements ProveedorJWT{
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                                           .issuedAt(now)
-                                          .expiresAt(now.plusSeconds(EXPIRATION))
+                                          .expiresAt(now.plusMillis(expirationMs))
                                           .subject(id.toString())
                                           .claim("permiso", permiso)
                                           .build();
