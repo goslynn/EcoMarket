@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component("encriptadorVigenere")
 public class EncriptadorVigenere implements Encriptador<String> {
 
-    @Value("${ecomarket.encriptacion.clave-vigenere")
+    @Value("${ecomarket.encriptacion.clave-vigenere}")
     private String clave;
     private static final String prefix = "#ENCPTD#";
 
