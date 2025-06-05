@@ -1,5 +1,6 @@
 package cl.duocuc.ecomarket.modelo.dto.usuario;
 
+import cl.duocuc.ecomarket.modelo.PeticionEncriptableDTO;
 import cl.duocuc.ecomarket.modelo.dto.PeticionDTO;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Rol;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
@@ -16,6 +17,7 @@ public record UsuarioRequestDTO(
 
         String correo,
 
+        //TODO: Validacion contraseña...
         String contrasenaHash,
 
         @FechaDB
@@ -37,14 +39,13 @@ public record UsuarioRequestDTO(
         String cargoEmpleado,
 
         String areaEmpleado
-) implements PeticionDTO<Usuario> {
+) implements PeticionEncriptableDTO<Usuario> {
 
         @Override
-        public Usuario toEntidad() {
+        public Usuario toEntidad(Encriptador<String> enc) {
                 Usuario u = new Usuario();
                 u.setNombreUsuario(nombre);
                 u.setCorreoUsuario(correo);
-                Encriptador<String> enc = ServicioUsuarios.encriptador;
                 String passw;
                 if (!enc.encriptado(contrasenaHash)) {
                         passw = enc.encriptar(contrasenaHash);

@@ -27,5 +27,9 @@ public interface Encriptador<T> {
      */
     boolean encriptado(T valor);
 
+    //TODO: pensarlo...
+//    static Encriptador<String> global() {
+//
+//    }
 
 }

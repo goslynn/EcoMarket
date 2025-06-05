@@ -11,13 +11,14 @@ import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
-import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
+import cl.duocuc.ecomarket.util.encriptacion.EncriptadorEcomarket;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 
 @Service
 public class ServicioUsuarios {
-    public static final Encriptador<String> encriptador = new EncriptadorChetado();
+    public final Encriptador<String> encriptador;
 
     private final UsuarioRepository userRepo;
     private final RolRepository rolRepo;
@@ -40,11 +41,13 @@ public class ServicioUsuarios {
     public ServicioUsuarios(UsuarioRepository userRepo,
                             RolRepository rolRepo,
                             PermisoRepository permisoRepo,
-                            RolesPermisoRepository rolesPermisoRepo) {
+                            RolesPermisoRepository rolesPermisoRepo,
+                            Encriptador<String> encriptador) {
         this.userRepo = userRepo;
         this.rolRepo = rolRepo;
         this.permisoRepo = permisoRepo;
         this.rolesPermisoRepo = rolesPermisoRepo;
+        this.encriptador = encriptador;
     }
 
 

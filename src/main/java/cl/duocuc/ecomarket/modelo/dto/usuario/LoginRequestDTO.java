@@ -1,22 +1,24 @@
 package cl.duocuc.ecomarket.modelo.dto.usuario;
 
-import cl.duocuc.ecomarket.modelo.dto.PeticionDTO;
+import cl.duocuc.ecomarket.modelo.PeticionEncriptableDTO;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
-import cl.duocuc.ecomarket.servicio.ServicioUsuarios;
+import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
 
 
 public record LoginRequestDTO(
         String nombreUsuario,
+
+        //TODO: Validacion contraseña...
         String contrasena
-) implements PeticionDTO<Usuario> {
+) implements PeticionEncriptableDTO<Usuario> {
 
     @Override
-    public Usuario toEntidad() {
+    public Usuario toEntidad(Encriptador<String> enc) {
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(nombreUsuario);
         String passw;
-        if (!ServicioUsuarios.encriptador.encriptado(contrasena)) {
-            passw  = ServicioUsuarios.encriptador.encriptar(contrasena);
+        if (!enc.encriptado(contrasena)) {
+            passw  = enc.encriptar(contrasena);
         } else {
             passw = contrasena;
         }

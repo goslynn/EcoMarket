@@ -13,7 +13,7 @@ public class EcomarketJWT implements ProveedorJWT{
     private final JwtEncoder encoder;
     private final JwtDecoder decoder;
 
-    @Value("${jwt.expiration.ms}")
+    @Value("${ecomarket.security.jwt.expiration.ms}")
     private long expirationMs;
 
     public EcomarketJWT(JwtEncoder encoder, JwtDecoder decoder) {

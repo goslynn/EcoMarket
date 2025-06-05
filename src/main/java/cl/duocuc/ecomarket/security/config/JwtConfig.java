@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class JwtConfig {
 
-    @Value("${jwt.secret}")
+    @Value("${ecomarket.security.jwt.secret}")
     private String secret;
 
     @Bean
