@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 
-public abstract class Validador {
+public class Validador {
 
     public boolean esFechaValida(String fecha, String formato) {
         if (fecha == null || fecha.isEmpty()) return false;

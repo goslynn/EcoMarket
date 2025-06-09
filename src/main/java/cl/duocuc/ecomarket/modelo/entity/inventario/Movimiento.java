@@ -35,7 +35,7 @@ public class Movimiento {
     private String motivo;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "fecha_movimiento")
+    @Column(name = "fecha_creacion")
     private Instant fechaMovimiento;
 
     public Integer getId() {

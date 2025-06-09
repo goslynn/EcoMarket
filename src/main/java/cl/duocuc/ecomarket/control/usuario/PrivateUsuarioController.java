@@ -3,7 +3,7 @@ package cl.duocuc.ecomarket.control.usuario;
 
 
 import cl.duocuc.ecomarket.modelo.dto.usuario.UsuarioResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.usuario.signup.EmpleadoRegistroDTO;
+import cl.duocuc.ecomarket.modelo.dto.usuario.EmpleadoRequestDTO;
 import cl.duocuc.ecomarket.servicio.ServicioUsuarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class PrivateUsuarioController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<UsuarioResponseDTO> crear(@Validated @RequestBody EmpleadoRegistroDTO usuario){
+    public ResponseEntity<UsuarioResponseDTO> crear(@Validated @RequestBody EmpleadoRequestDTO usuario){
         return ResponseEntity.status(201).body(service.registrar(usuario));
     }
 
