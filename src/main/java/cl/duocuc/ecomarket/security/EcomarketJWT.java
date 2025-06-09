@@ -22,13 +22,13 @@ public class EcomarketJWT implements ProveedorJWT{
     }
 
     @Override
-    public String generarToken(Number id, int permiso) {
+    public String generarToken(Number idUsuario, int idRol) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                                           .issuedAt(now)
                                           .expiresAt(now.plusMillis(expirationMs))
-                                          .subject(id.toString())
-                                          .claim("permiso", permiso)
+                                          .subject(idUsuario.toString())
+                                          .claim("rol_id", idRol)
                                           .build();
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
@@ -50,9 +50,8 @@ public class EcomarketJWT implements ProveedorJWT{
     }
 
     @Override
-    public int getPermiso(String token) {
-        Jwt decodedJwt = decoder.decode(token);
-        return (int) decodedJwt.getClaims().get("permiso");
+    public <T> T getClaim(String token, String claimName) {
+        return decoder.decode(token).getClaim(claimName);
     }
 
 }

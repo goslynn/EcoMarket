@@ -11,14 +11,12 @@ import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
-import cl.duocuc.ecomarket.util.encriptacion.EncriptadorEcomarket;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -57,6 +55,11 @@ public class ServicioUsuarios {
     }
 
 
+
+    protected Usuario obtenerUsuario(LoginRequestDTO usuario) throws ApiException{
+        return userRepo.findByCorreoUsuario(usuario.correo())
+                .orElseThrow(() -> new ApiException(404, "Usuario no encontrado con el correo proporcionado: " + usuario.correo()));
+    }
 
     public UsuarioResponseDTO obtenerUsuario(Integer id) throws ApiException{
         return userRepo.findById(id)
@@ -187,11 +190,23 @@ public class ServicioUsuarios {
 
 //    @Transactional(readOnly = true)
     public RolPermisosResponseDTO obtenerRolPermisos(Integer id) throws ApiException {
-        Rol rol = rolRepo.findById(id)
-                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
-
+        Rol rol = buscarRol(id);
         return RolPermisosResponseDTO.fromEntidad(rol);
     }
+
+    protected Permiso[] buscarPermisos(Usuario usuario) throws ApiException {
+        return usuario.getRol().getRolesPermisos().stream()
+                .map(RolesPermiso::getPermiso)
+                .filter(Permiso::getActivo)
+                .toArray(Permiso[]::new);
+    }
+
+    protected Rol buscarRol(Integer id) throws ApiException {
+        return rolRepo.findById(id)
+                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
+    }
+
+
 
 
     @Transactional
@@ -231,6 +246,7 @@ public class ServicioUsuarios {
         }
         return CodigoDescripcion.of(id, "Rol actualizado correctamente");
     }
+
 
 
     public List<PermisoResponseDTO> obtenerPermisos() throws ApiException{

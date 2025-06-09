@@ -1,8 +1,6 @@
 package cl.duocuc.ecomarket.util.encriptacion;
 
-import org.springframework.stereotype.Component;
 
-@Component("encriptadorEcomarket")
 public class EncriptadorEcomarket implements Encriptador<String> {
 
     private final Encriptador<String> primero;

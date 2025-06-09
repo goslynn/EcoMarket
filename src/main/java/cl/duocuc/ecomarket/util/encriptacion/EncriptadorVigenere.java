@@ -1,9 +1,8 @@
 package cl.duocuc.ecomarket.util.encriptacion;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component("encriptadorVigenere")
+
 public class EncriptadorVigenere implements Encriptador<String> {
 
     @Value("${ecomarket.encriptacion.clave-vigenere}")

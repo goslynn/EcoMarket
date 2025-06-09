@@ -7,9 +7,7 @@ import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
 import cl.duocuc.ecomarket.servicio.ServicioUsuarios;
 import cl.duocuc.ecomarket.tipodatos.Genero;
 import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
-import cl.duocuc.ecomarket.util.validacion.FechaDB;
-import cl.duocuc.ecomarket.util.validacion.Rut;
-import cl.duocuc.ecomarket.util.validacion.Telefono;
+import cl.duocuc.ecomarket.util.validacion.*;
 
 public record UsuarioRequestDTO(
 
@@ -17,7 +15,8 @@ public record UsuarioRequestDTO(
 
         String correo,
 
-        //TODO: Validacion contraseña...
+        @Requerido
+        @Contrasena
         String contrasenaHash,
 
         @FechaDB

@@ -11,33 +11,14 @@ public enum ModuloEcommerce {
 
     private final CodigoDescripcion<Integer, String> codigoDescripcion;
 
-    ModuloEcommerce(Integer codigo, String descripcion){
-        this.codigoDescripcion = new CodigoDescripcion<>() {
-            @Override
-            public Integer getCodigo() {
-                return codigo;
-            }
-
-            @Override
-            public String getDescripcion() {
-                return descripcion;
-            }
-        };
-    }
-
     ModuloEcommerce(String descripcion){
-        this.codigoDescripcion = new CodigoDescripcion<>() {
-            @Override
-            public Integer getCodigo() {
-                return 0;
-            }
-
-            @Override
-            public String getDescripcion() {
-                return descripcion;
-            }
-        };
+        this(0, descripcion);
     }
+
+    ModuloEcommerce(Integer codigo, String descripcion){
+        this.codigoDescripcion = CodigoDescripcion.of(codigo, descripcion);
+    }
+
 
     public CodigoDescripcion<Integer, String> getCodigoDescripcion() {
         return codigoDescripcion;

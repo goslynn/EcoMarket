@@ -21,6 +21,8 @@ public class PermisoFuncional implements CodigoDescripcion<String, String> {
         }
     }
 
+
+
     public int getCuantificable(){
         return cuantificable;
     }

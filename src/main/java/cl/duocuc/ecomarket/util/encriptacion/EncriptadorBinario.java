@@ -1,9 +1,6 @@
 package cl.duocuc.ecomarket.util.encriptacion;
 
 
-import org.springframework.stereotype.Component;
-
-@Component("encriptadorBinario")
 public class EncriptadorBinario implements Encriptador<String>{
 
     /**
