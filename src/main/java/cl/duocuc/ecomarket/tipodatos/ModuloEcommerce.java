@@ -3,11 +3,11 @@ package cl.duocuc.ecomarket.tipodatos;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 
 public enum ModuloEcommerce {
-    CARRITO("Carrito de Compras"),
-    PRODUCTO("Producto"),
-    CATEGORIA("Categoria"),
-    PEDIDO("Pedido"),
-    USUARIO(1, "Usuario");
+    USUARIO(10, "Usuario"),
+    CARRITO(20, "Carrito de Compras"),
+    BODEGA(30, "Bodega"),
+    PRODUCTO(31, "Producto"),
+    PEDIDO(32, "Pedido");
 
     private final CodigoDescripcion<Integer, String> codigoDescripcion;
 
