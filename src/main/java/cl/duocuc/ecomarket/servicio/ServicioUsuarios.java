@@ -195,7 +195,17 @@ public class ServicioUsuarios {
     }
 
     protected Permiso[] buscarPermisos(Usuario usuario) throws ApiException {
-        return usuario.getRol().getRolesPermisos().stream()
+        return buscarPermisos(usuario.getRol());
+    }
+
+    protected Permiso[] buscarPermisos(Integer idRol) throws ApiException {
+        return buscarPermisos(rolRepo.findById(idRol)
+                                     .filter(Rol::getActivo)
+                                     .orElseThrow(() -> new ApiException(404, "Rol con ID " + idRol + " no encontrado")));
+    }
+
+    protected Permiso[] buscarPermisos(Rol rol) throws ApiException {
+        return rol.getRolesPermisos().stream()
                 .map(RolesPermiso::getPermiso)
                 .filter(Permiso::getActivo)
                 .toArray(Permiso[]::new);
@@ -262,4 +272,19 @@ public class ServicioUsuarios {
         return permisos;
     }
 
+    public UsuarioRepository getUserRepo() {
+        return userRepo;
+    }
+
+    public RolRepository getRolRepo() {
+        return rolRepo;
+    }
+
+    public PermisoRepository getPermisoRepo() {
+        return permisoRepo;
+    }
+
+    public RolesPermisoRepository getRolesPermisoRepo() {
+        return rolesPermisoRepo;
+    }
 }

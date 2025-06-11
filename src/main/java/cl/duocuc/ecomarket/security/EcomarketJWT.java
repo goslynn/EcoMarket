@@ -44,7 +44,7 @@ public class EcomarketJWT implements ProveedorJWT{
     }
 
     @Override
-    public Number getIdUsuario(String token) {
+    public Integer getIdUsuario(String token) {
         Jwt decodedJwt = decoder.decode(token);
         return Integer.parseInt(decodedJwt.getSubject());
     }

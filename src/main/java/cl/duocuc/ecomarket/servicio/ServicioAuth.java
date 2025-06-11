@@ -2,12 +2,14 @@ package cl.duocuc.ecomarket.servicio;
 
 import cl.duocuc.ecomarket.funcional.PermisoFuncional;
 import cl.duocuc.ecomarket.modelo.dto.usuario.LoginRequestDTO;
+import cl.duocuc.ecomarket.modelo.entity.usuario.Permiso;
+import cl.duocuc.ecomarket.modelo.entity.usuario.Rol;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
 import cl.duocuc.ecomarket.security.EcomarketJWT;
 import cl.duocuc.ecomarket.security.ProveedorJWT;
+import cl.duocuc.ecomarket.tipodatos.TipoPermiso;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.exception.ApiException;
-import cl.duocuc.ecomarket.util.exception.ErrorDatos;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -25,11 +27,6 @@ public class ServicioAuth {
     }
 
 
-
-    /* TODO: Recordar que la generacion de permisos es con 1 unico numero cuantificable
-        donde el primer digito se valida con >=, <= y los segundos dos digitos se validan
-        con .equals()
-     */
     public CodigoDescripcion<Integer, String> login(LoginRequestDTO dto) throws ApiException{
         Usuario u = servicioUsuarios.obtenerUsuario(dto);
         return CodigoDescripcion.of(
@@ -38,17 +35,29 @@ public class ServicioAuth {
         );
     }
 
-    public PermisoFuncional[] getPermisos(final Usuario usuario) throws ApiException {
-        return Arrays.stream(servicioUsuarios.buscarPermisos(usuario))
-                     .map(p -> {
-                         try {
-                             return new PermisoFuncional(p);
-                         } catch (ErrorDatos e) {
-                             throw new ApiException(500, "Error resolviendo permisos.", e);
-                         }
-                     })
-                     .toArray(PermisoFuncional[]::new);
+    public Usuario getUsuario(String token) throws ApiException{
+        Integer id = jwt.getIdUsuario(token);
+        return servicioUsuarios.getUserRepo().findById(id)
+                               .filter(Usuario::getActivo)
+                               .orElseThrow(() -> new ApiException(404, String.format("el usuario con id {%d} no existe", id)));
     }
+
+    private Permiso[] getPermisos(String token) throws ApiException {
+        return servicioUsuarios.buscarPermisos((Integer) jwt.getClaim(token, "rol_id"));
+    }
+
+    public boolean isAutorizado(String token, int tipo) {
+        return isAutorizado(token, TipoPermiso.valueOf(tipo));
+    }
+
+    public boolean isAutorizado(String token, TipoPermiso requiere) {
+        return PermisoFuncional.buscarCandidatos(getPermisos(token), requiere)
+                               .map(permisos -> Arrays.stream(permisos)
+                                                      .anyMatch(p -> PermisoFuncional.esSuficiente(p, requiere)))
+                               .orElse(false);
+    }
+
+
 
 
 }

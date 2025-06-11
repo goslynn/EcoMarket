@@ -2,7 +2,7 @@ package cl.duocuc.ecomarket.tipodatos;
 
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 
-public enum ModuloEcommerce {
+public enum RecursoEcomarket {
     USUARIO(10, "Usuario"),
     CARRITO(20, "Carrito de Compras"),
     BODEGA(30, "Bodega"),
@@ -11,11 +11,11 @@ public enum ModuloEcommerce {
 
     private final CodigoDescripcion<Integer, String> codigoDescripcion;
 
-    ModuloEcommerce(String descripcion){
+    RecursoEcomarket(String descripcion){
         this(0, descripcion);
     }
 
-    ModuloEcommerce(Integer codigo, String descripcion){
+    RecursoEcomarket(Integer codigo, String descripcion){
         this.codigoDescripcion = CodigoDescripcion.of(codigo, descripcion);
     }
 
@@ -30,5 +30,14 @@ public enum ModuloEcommerce {
 
     public String getDescripcion() {
         return codigoDescripcion.getDescripcion();
+    }
+
+    public static RecursoEcomarket valueOf(Integer codigo) {
+        for (RecursoEcomarket recurso : values()) {
+            if (recurso.getCodigo().equals(codigo)) {
+                return recurso;
+            }
+        }
+        throw new IllegalArgumentException("No se encontró un recurso con el código: " + codigo);
     }
 }

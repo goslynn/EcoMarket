@@ -1,7 +1,6 @@
 package cl.duocuc.ecomarket.modelo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -9,7 +8,7 @@ import java.time.Instant;
 @MappedSuperclass
 public class EntidadAuditable implements Auditable{
 
-    @Column(name = "fecha_creacion", insertable = false)
+    @Column(name = "fecha_creacion", insertable = false, updatable = false, nullable = false)
     @ColumnDefault("CURRENT_TIMESTAMP")
     private Instant fechaCreacion;
 
@@ -22,5 +21,14 @@ public class EntidadAuditable implements Auditable{
     @Override
     public void setFechaCreacion(Instant fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    private void initDefaults() {
+        if (fechaCreacion == null) {
+            fechaCreacion = Instant.now();
+        }
     }
 }

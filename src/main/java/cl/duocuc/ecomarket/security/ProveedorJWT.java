@@ -6,7 +6,7 @@ public interface ProveedorJWT {
 
     boolean validarToken(String token);
 
-    Number getIdUsuario(String token);
+    Integer getIdUsuario(String token);
 
     <T> T getClaim(String token, String claimName);
 }
