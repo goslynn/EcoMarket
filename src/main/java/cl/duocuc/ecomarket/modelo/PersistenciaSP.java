@@ -5,7 +5,6 @@ import cl.duocuc.ecomarket.modelo.dto.usuario.UsuarioResponseDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
 import jakarta.persistence.StoredProcedureQuery;
-import cl.duocuc.ecomarket.modelo.dto.usuario.UsuarioUpdateRequestDTO;
 
 
 public class PersistenciaSP {

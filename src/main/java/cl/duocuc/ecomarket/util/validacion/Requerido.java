@@ -16,10 +16,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {})
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-/**
- * Valida un campo requerido u obligatorio,
- * no puede ser null o vacio.
- */
 public @interface Requerido {
     String message() default "El valor no puede ser nulo o vacío";
     Class<?>[] groups() default {};

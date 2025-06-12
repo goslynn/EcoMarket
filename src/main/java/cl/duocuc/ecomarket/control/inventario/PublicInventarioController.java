@@ -1,17 +1,17 @@
 package cl.duocuc.ecomarket.control.inventario;
 
-import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Bodega.BodegaUpdateDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Familia.FamiliaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Familia.FamiliaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Inventario.InventarioResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamilia.SubFamiliaRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamilia.SubFamiliaResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalRequestDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalResponseDTO;
-import cl.duocuc.ecomarket.modelo.dto.inventario.Sucursal.SucursalUpdateDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.BodegaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.BodegaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.FamiliaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.FamiliaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.InventarioResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.ProductoRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.ProductoResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamiliaRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SubFamiliaResponseDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SucursalRequestDTO;
+import cl.duocuc.ecomarket.modelo.dto.inventario.SucursalResponseDTO;
 
 import cl.duocuc.ecomarket.servicio.ServicioInventario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,6 @@ public class PublicInventarioController {
     private final ServicioInventario service;
 
     // Constructor con inyección de dependencias
-    @Autowired
     public PublicInventarioController(ServicioInventario service){
         this.service = service;
     }
@@ -75,7 +74,7 @@ public class PublicInventarioController {
     }
 
     @PutMapping("/bodega/{id}")
-    public ResponseEntity<Void> actualizarBodega(@PathVariable Long id, @RequestBody BodegaUpdateDTO bodega) {
+    public ResponseEntity<Void> actualizarBodega(@PathVariable Long id, @RequestBody BodegaRequestDTO bodega) {
         service.actualizarBodega(id, bodega);
         return ResponseEntity.ok().build();
     }
@@ -108,7 +107,7 @@ public class PublicInventarioController {
     }
 
     @PutMapping("/sucursal/{id}")
-    public ResponseEntity<Void> actualizarSucursal(@PathVariable Long id, @RequestBody SucursalUpdateDTO sucursal) {
+    public ResponseEntity<Void> actualizarSucursal(@PathVariable Long id, @RequestBody SucursalRequestDTO sucursal) {
         service.actualizarSucursal(id, sucursal);
         return ResponseEntity.ok().build();
     }
@@ -192,5 +191,31 @@ public class PublicInventarioController {
     // Endpoints para Producto
     // ==============================
 
+    @GetMapping("/producto/{id}")
+    public ResponseEntity<ProductoResponseDTO> consultarProducto(@PathVariable Long id){
+        return ResponseEntity.ok(service.obtenerProducto(id));
+    }
 
+    @PostMapping("/producto")
+    public ResponseEntity<ProductoResponseDTO> crearProducto(@RequestBody ProductoRequestDTO producto){
+        ProductoResponseDTO creado = service.crearProducto(producto);
+        return ResponseEntity.status(201).body(creado);
+    }
+
+    @PutMapping("/producto/{id}")
+    public ResponseEntity<Void> actualizarProducto(@PathVariable Long id, @RequestBody ProductoRequestDTO producto) {
+        service.actualizarProducto(id, producto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/producto/{id}")
+    public ResponseEntity<String> desactivarProducto(@PathVariable Long id){
+        service.desactivarProducto(id);
+        return ResponseEntity.status(204).body(String.format("Producto %d desactivado correctamente", id));
+    }
+
+    @GetMapping("/producto")
+    public ResponseEntity<List<ProductoResponseDTO>> listarProductos(){
+        return ResponseEntity.ok(service.listarProductos());
+    }
 }

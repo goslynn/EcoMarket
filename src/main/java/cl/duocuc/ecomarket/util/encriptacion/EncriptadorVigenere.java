@@ -1,16 +1,13 @@
 package cl.duocuc.ecomarket.util.encriptacion;
 
+import org.springframework.beans.factory.annotation.Value;
+
+
 public class EncriptadorVigenere implements Encriptador<String> {
 
-    private final String clave;
+    @Value("${ecomarket.encriptacion.clave-vigenere}")
+    private String clave;
     private static final String prefix = "#ENCPTD#";
-
-    public EncriptadorVigenere(String clave) throws IllegalArgumentException {
-        if (clave == null || clave.isEmpty()) {
-            throw new IllegalArgumentException("La clave no puede ser nula o vacía");
-        }
-        this.clave = clave.toUpperCase();
-    }
 
     /**
      * {@inheritDoc}
@@ -74,17 +71,6 @@ public class EncriptadorVigenere implements Encriptador<String> {
     @Override
     public boolean encriptado(String valor) {
         return valor != null && valor.startsWith(prefix);
-    }
-
-    public static void main(String[] args) {
-        EncriptadorVigenere cifrador = new EncriptadorVigenere("PACONI");
-
-        String mensaje = "HolaMundo";
-        String cifrado = cifrador.encriptar(mensaje);
-        System.out.println("Texto cifrado: " + cifrado + "\n Encriptado ? " + cifrador.encriptado(cifrado));
-
-        String descifrado = cifrador.desencriptar(cifrado);
-        System.out.println("Texto descifrado: " + descifrado + "\n Encriptado ? " + cifrador.encriptado(descifrado));
     }
 
 
