@@ -7,5 +7,6 @@ public record ProductoRequestDTO(
         String NombreProducto,
         String Descripcion,
         BigDecimal Precio,
-        Long idSubFamilia
+        Long idSubFamilia,
+        Byte Img
 ){}
