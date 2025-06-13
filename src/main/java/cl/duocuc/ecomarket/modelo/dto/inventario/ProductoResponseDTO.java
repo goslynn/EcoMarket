@@ -9,5 +9,6 @@ public record ProductoResponseDTO(
         String Descripcion,
         BigDecimal Precio,
         Long idSubFamilia,
-        Boolean Activo
+        Boolean Activo,
+        byte[] Img
 ){}
