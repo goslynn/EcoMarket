@@ -1,6 +1,5 @@
 package cl.duocuc.ecomarket.funcional;
 
-import cl.duocuc.ecomarket.util.LineaDetalle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

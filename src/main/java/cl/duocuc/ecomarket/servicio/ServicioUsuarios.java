@@ -20,11 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
 public class ServicioUsuarios {
-    public final Encriptador<String> encriptador;
+    private final Encriptador<String> encriptador;
 
     private final UsuarioRepository userRepo;
     private final RolRepository rolRepo;
@@ -54,12 +55,6 @@ public class ServicioUsuarios {
         this.persistencia = new PersistenciaSP(em);
     }
 
-
-
-    protected Usuario obtenerUsuario(LoginRequestDTO usuario) throws ApiException{
-        return userRepo.findByCorreoUsuario(usuario.correo())
-                .orElseThrow(() -> new ApiException(404, "Usuario no encontrado con el correo proporcionado: " + usuario.correo()));
-    }
 
     public UsuarioResponseDTO obtenerUsuario(Integer id) throws ApiException{
         return userRepo.findById(id)
@@ -194,21 +189,24 @@ public class ServicioUsuarios {
         return RolPermisosResponseDTO.fromEntidad(rol);
     }
 
-    protected Permiso[] buscarPermisos(Usuario usuario) throws ApiException {
+    @Transactional
+    protected List<Permiso> buscarPermisos(Usuario usuario) throws ApiException {
         return buscarPermisos(usuario.getRol());
     }
 
-    protected Permiso[] buscarPermisos(Integer idRol) throws ApiException {
+    @Transactional
+    protected List<Permiso> buscarPermisos(Integer idRol) throws ApiException {
         return buscarPermisos(rolRepo.findById(idRol)
                                      .filter(Rol::getActivo)
                                      .orElseThrow(() -> new ApiException(404, "Rol con ID " + idRol + " no encontrado")));
     }
 
-    protected Permiso[] buscarPermisos(Rol rol) throws ApiException {
+    @Transactional
+    protected List<Permiso> buscarPermisos(Rol rol) throws ApiException {
         return rol.getRolesPermisos().stream()
                 .map(RolesPermiso::getPermiso)
                 .filter(Permiso::getActivo)
-                .toArray(Permiso[]::new);
+                .toList();
     }
 
     protected Rol buscarRol(Integer id) throws ApiException {

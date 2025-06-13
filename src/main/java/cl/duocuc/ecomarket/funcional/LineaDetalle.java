@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.util;
+package cl.duocuc.ecomarket.funcional;
 
 
 import java.math.BigDecimal;

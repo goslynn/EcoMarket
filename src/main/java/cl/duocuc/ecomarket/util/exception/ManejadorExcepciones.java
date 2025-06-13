@@ -25,6 +25,7 @@ public class ManejadorExcepciones {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> manejarValidacion(MethodArgumentNotValidException ex) {
+        traza(ex);
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.BAD_REQUEST.value());

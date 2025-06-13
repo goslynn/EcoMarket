@@ -9,10 +9,12 @@ import cl.duocuc.ecomarket.security.EcomarketJWT;
 import cl.duocuc.ecomarket.security.ProveedorJWT;
 import cl.duocuc.ecomarket.tipodatos.TipoPermiso;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
+import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class ServicioAuth {
@@ -20,15 +22,24 @@ public class ServicioAuth {
 
     private final ServicioUsuarios servicioUsuarios;
     private final ProveedorJWT jwt;
+    private final Encriptador<String> encriptador;
 
-    public ServicioAuth(ServicioUsuarios servicioUsuarios, EcomarketJWT jwt) {
+    public ServicioAuth(ServicioUsuarios servicioUsuarios, EcomarketJWT jwt, Encriptador<String> encriptador) {
         this.servicioUsuarios = servicioUsuarios;
         this.jwt = jwt;
+        this.encriptador = encriptador;
     }
 
 
     public CodigoDescripcion<Integer, String> login(LoginRequestDTO dto) throws ApiException{
-        Usuario u = servicioUsuarios.obtenerUsuario(dto);
+        Usuario u = servicioUsuarios.getUserRepo().findByCorreoUsuario(dto.correo())
+                .filter(Usuario::getActivo)
+                .orElseThrow(() -> new ApiException(404, "Usuario no encontrado con el correo proporcionado: " + dto.correo()));
+
+        if (!(encriptador.desencriptar(u.getContrasenaHash())).equals(dto.contrasena())) {
+            throw new ApiException(401, "Contrasena incorrecta!");
+        }
+
         return CodigoDescripcion.of(
                 u.getId(),
                 jwt.generarToken(u.getId(), u.getRol().getId())
@@ -42,8 +53,8 @@ public class ServicioAuth {
                                .orElseThrow(() -> new ApiException(404, String.format("el usuario con id {%d} no existe", id)));
     }
 
-    private Permiso[] getPermisos(String token) throws ApiException {
-        return servicioUsuarios.buscarPermisos((Integer) jwt.getClaim(token, "rol_id"));
+    private List<Permiso>  getPermisos(String token) throws ApiException {
+        return servicioUsuarios.buscarPermisos(((Long) jwt.getClaim(token, "rol_id")).intValue());
     }
 
     public boolean isAutorizado(String token, int tipo) {
@@ -52,7 +63,7 @@ public class ServicioAuth {
 
     public boolean isAutorizado(String token, TipoPermiso requiere) {
         return PermisoFuncional.buscarCandidatos(getPermisos(token), requiere)
-                               .map(permisos -> Arrays.stream(permisos)
+                               .map(permisos -> (permisos).stream()
                                                       .anyMatch(p -> PermisoFuncional.esSuficiente(p, requiere)))
                                .orElse(false);
     }
