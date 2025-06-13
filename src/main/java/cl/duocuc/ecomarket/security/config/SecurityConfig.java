@@ -45,7 +45,7 @@ public class SecurityConfig {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             Collection<GrantedAuthority> autoridades = new ArrayList<>(1);
-            Integer permiso = jwt.getClaim("rol_id");
+            Long permiso = jwt.getClaim("rol_id");
             if (permiso != null) {
                 autoridades.add(new SimpleGrantedAuthority(String.format("ROL_%d", permiso)));
             }
@@ -53,6 +53,7 @@ public class SecurityConfig {
         });
         return converter;
     }
+
     private AuthorizationManager<RequestAuthorizationContext> accesoPrivadoManager() {
         return (authenticationSupplier, context) ->
                 new AuthorizationDecision(

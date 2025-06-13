@@ -9,7 +9,7 @@ import cl.duocuc.ecomarket.modelo.entity.venta.Venta;
 import cl.duocuc.ecomarket.modelo.repository.DetalleVentaRepository;
 import cl.duocuc.ecomarket.modelo.repository.VentaRepository;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
-import cl.duocuc.ecomarket.util.LineaDetalle;
+import cl.duocuc.ecomarket.funcional.LineaDetalle;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import org.springframework.stereotype.Service;
 
