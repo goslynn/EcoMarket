@@ -1,13 +1,14 @@
 package cl.duocuc.ecomarket.modelo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.time.Instant;
 
 @MappedSuperclass
 public class EntidadActivable implements Activable {
 
-    @Column(name = "activo", insertable = false)
+    @Column(name = "activo", insertable = false, nullable = false)
     @ColumnDefault("true")
     private Boolean activo;
 
@@ -19,6 +20,15 @@ public class EntidadActivable implements Activable {
     @Override
     public void setActivo(Boolean activo) {
         this.activo = activo;
+    }
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    private void initDefaults() {
+        if (activo == null) {
+            activo = true;
+        }
     }
 
 }

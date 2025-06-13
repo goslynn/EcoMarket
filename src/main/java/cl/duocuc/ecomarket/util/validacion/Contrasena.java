@@ -1,23 +1,17 @@
 package cl.duocuc.ecomarket.util.validacion;
 
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.ReportAsSingleViolation;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.lang.annotation.*;
 
-@NotNull
-@NotBlank
-@ReportAsSingleViolation
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = ValidacionContrasena.class)
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Requerido {
-    String message() default "El valor no puede ser nulo o vacío";
+public @interface Contrasena {
+    String message() default "Contrasena no valida, requiere al menos 8 caracteres, una mayuscula, una minuscula y un numero";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
+

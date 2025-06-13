@@ -33,13 +33,6 @@ public class PublicUsuarioController {
         return ResponseEntity.status(201).body(service.registrar(usuario));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<UsuarioResponseDTO> login(@Valid @RequestBody LoginRequestDTO usuario){
-        //TODO: auth
-        return null;
-    }
-
-
     /**
      * Este es el put que hace la el json insert el update ya nose que mas poner vivan las goticas.
      * eso.

@@ -6,6 +6,7 @@ import cl.duocuc.ecomarket.modelo.entity.venta.DetalleVenta;
 
 import java.math.BigDecimal;
 
+//TODO: Mejora, precioUnitario opcional, si es null usar el de la base de datos.
 public record DetalleVentaDTO(
         Long idProducto,
         Long cantidad,

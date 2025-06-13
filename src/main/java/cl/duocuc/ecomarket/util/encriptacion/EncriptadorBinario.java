@@ -3,6 +3,9 @@ package cl.duocuc.ecomarket.util.encriptacion;
 
 public class EncriptadorBinario implements Encriptador<String>{
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String encriptar(String valor) {
         StringBuilder resultado = new StringBuilder();
@@ -16,6 +19,9 @@ public class EncriptadorBinario implements Encriptador<String>{
         return resultado.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String desencriptar(String valor) {
         StringBuilder resultado = new StringBuilder();
@@ -27,6 +33,9 @@ public class EncriptadorBinario implements Encriptador<String>{
         return resultado.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean encriptado(String valor) {
         if (valor == null || valor.isEmpty() || valor.length() % 8 != 0) {
@@ -40,18 +49,4 @@ public class EncriptadorBinario implements Encriptador<String>{
         return true;
     }
 
-
-    public static void main(String[] args){
-        EncriptadorBinario encriptadorBinario = new EncriptadorBinario();
-        String s = "HolaMundo!#-_./|";
-
-        String textoEncriptado = encriptadorBinario.encriptar(s);
-        String textoDesencriptado = encriptadorBinario.desencriptar(textoEncriptado);
-
-        System.out.println("Encriptado: "  + textoEncriptado);
-        System.out.println("Encriptado ? " + encriptadorBinario.encriptado(textoEncriptado));
-        System.out.println("Desencriptado: " + textoDesencriptado);
-        System.out.println("Encriptado ? " + encriptadorBinario.encriptado(textoDesencriptado));
-
-    }
 }

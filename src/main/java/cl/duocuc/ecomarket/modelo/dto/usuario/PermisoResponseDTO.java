@@ -2,10 +2,12 @@ package cl.duocuc.ecomarket.modelo.dto.usuario;
 
 import cl.duocuc.ecomarket.modelo.dto.RespuestaDTO;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Permiso;
-import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.validacion.Requerido;
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder("id, clave, descripcion_permiso")
 public record PermisoResponseDTO(
 
         Integer id,
@@ -13,6 +15,7 @@ public record PermisoResponseDTO(
         @Requerido
         String clave,
 
+        @JsonProperty("descripcion_permiso")
         String descripcion
 
 ) implements RespuestaDTO {

@@ -11,7 +11,6 @@ import cl.duocuc.ecomarket.modelo.repository.UsuarioRepository;
 import cl.duocuc.ecomarket.tipodatos.TipoCuenta;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 import cl.duocuc.ecomarket.util.encriptacion.Encriptador;
-import cl.duocuc.ecomarket.util.encriptacion.EncriptadorChetado;
 import cl.duocuc.ecomarket.util.exception.ApiException;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
@@ -21,11 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
 public class ServicioUsuarios {
-    public static final Encriptador<String> encriptador = new EncriptadorChetado();
+    private final Encriptador<String> encriptador;
 
     private final UsuarioRepository userRepo;
     private final RolRepository rolRepo;
@@ -40,11 +40,13 @@ public class ServicioUsuarios {
     public ServicioUsuarios(UsuarioRepository userRepo,
                             RolRepository rolRepo,
                             PermisoRepository permisoRepo,
-                            RolesPermisoRepository rolesPermisoRepo) {
+                            RolesPermisoRepository rolesPermisoRepo,
+                            Encriptador<String> encriptador) {
         this.userRepo = userRepo;
         this.rolRepo = rolRepo;
         this.permisoRepo = permisoRepo;
         this.rolesPermisoRepo = rolesPermisoRepo;
+        this.encriptador = encriptador;
     }
 
 
@@ -52,7 +54,6 @@ public class ServicioUsuarios {
     public void init() {
         this.persistencia = new PersistenciaSP(em);
     }
-
 
 
     public UsuarioResponseDTO obtenerUsuario(Integer id) throws ApiException{
@@ -184,11 +185,36 @@ public class ServicioUsuarios {
 
 //    @Transactional(readOnly = true)
     public RolPermisosResponseDTO obtenerRolPermisos(Integer id) throws ApiException {
-        Rol rol = rolRepo.findById(id)
-                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
-
+        Rol rol = buscarRol(id);
         return RolPermisosResponseDTO.fromEntidad(rol);
     }
+
+    @Transactional
+    protected List<Permiso> buscarPermisos(Usuario usuario) throws ApiException {
+        return buscarPermisos(usuario.getRol());
+    }
+
+    @Transactional
+    protected List<Permiso> buscarPermisos(Integer idRol) throws ApiException {
+        return buscarPermisos(rolRepo.findById(idRol)
+                                     .filter(Rol::getActivo)
+                                     .orElseThrow(() -> new ApiException(404, "Rol con ID " + idRol + " no encontrado")));
+    }
+
+    @Transactional
+    protected List<Permiso> buscarPermisos(Rol rol) throws ApiException {
+        return rol.getRolesPermisos().stream()
+                .map(RolesPermiso::getPermiso)
+                .filter(Permiso::getActivo)
+                .toList();
+    }
+
+    protected Rol buscarRol(Integer id) throws ApiException {
+        return rolRepo.findById(id)
+                .orElseThrow(() -> new ApiException(404, "Rol con ID " + id + " no encontrado"));
+    }
+
+
 
 
     @Transactional
@@ -230,6 +256,7 @@ public class ServicioUsuarios {
     }
 
 
+
     public List<PermisoResponseDTO> obtenerPermisos() throws ApiException{
         List<PermisoResponseDTO> permisos = permisoRepo.findAll().stream()
                                     .filter(Permiso::getActivo)
@@ -243,4 +270,19 @@ public class ServicioUsuarios {
         return permisos;
     }
 
+    public UsuarioRepository getUserRepo() {
+        return userRepo;
+    }
+
+    public RolRepository getRolRepo() {
+        return rolRepo;
+    }
+
+    public PermisoRepository getPermisoRepo() {
+        return permisoRepo;
+    }
+
+    public RolesPermisoRepository getRolesPermisoRepo() {
+        return rolesPermisoRepo;
+    }
 }
