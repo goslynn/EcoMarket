@@ -15,7 +15,8 @@ public class ProductoMapper {
                 p.getDescripcion(),
                 p.getPrecio(),
                 p.getIdSubfamilia().getId(),
-                p.getActivo()
+                p.getActivo(),
+                p.getImg()
         );
     }
 
