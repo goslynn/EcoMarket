@@ -1,10 +1,9 @@
 package cl.duocuc.ecomarket.control.venta;
 
-import cl.duocuc.ecomarket.control.Auth;
+
 import cl.duocuc.ecomarket.funcional.RequierePermiso;
 import cl.duocuc.ecomarket.modelo.dto.venta.PeticionVentaDTO;
 import cl.duocuc.ecomarket.modelo.dto.venta.RespuestaVentaDTO;
-import cl.duocuc.ecomarket.servicio.ServicioAuth;
 import cl.duocuc.ecomarket.servicio.ServicioVenta;
 import cl.duocuc.ecomarket.tipodatos.TipoPermiso;
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
@@ -14,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/public/venta")
-public class PublicVentaController extends Auth {
+public class PublicVentaController {
     private final ServicioVenta servicio;
 
-    public PublicVentaController(ServicioVenta servicioVenta, ServicioAuth servicioAuth) {
-        super(servicioAuth);
+    public PublicVentaController(ServicioVenta servicioVenta) {
         this.servicio = servicioVenta;
     }
 

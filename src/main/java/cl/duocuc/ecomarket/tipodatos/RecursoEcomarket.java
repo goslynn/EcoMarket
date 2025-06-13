@@ -2,35 +2,43 @@ package cl.duocuc.ecomarket.tipodatos;
 
 import cl.duocuc.ecomarket.util.CodigoDescripcion;
 
-public enum RecursoEcomarket {
-    USUARIO(10, "Usuario"),
-    CARRITO(20, "Carrito de Compras"),
-    BODEGA(30, "Bodega"),
-    PRODUCTO(31, "Producto"),
-    PEDIDO(32, "Pedido");
+public enum RecursoEcomarket implements CodigoDescripcion<Integer, String> {
+    USUARIO(10, "user"),
+    ROL(11, "rol"),
+    PERMISO(12, "permiso"),
+    INVENTARIO(30, "inventario"),
+    MOVIMIENTO(31, "movimiento"),
+    TIPOMOVIMIENTO(32, "tipo-movimiento"),
+    BODEGA(34, "bodega"),
+    PRODUCTO(40, "producto"),
+    FAMILIA(41, "familia"),
+    SUBFAMILIA(42, "subfamilia"),
+    VENTA(50, "venta");
 
-    private final CodigoDescripcion<Integer, String> codigoDescripcion;
+    final Integer codigo;
+    final String descripcion;
 
     RecursoEcomarket(String descripcion){
         this(0, descripcion);
     }
 
     RecursoEcomarket(Integer codigo, String descripcion){
-        this.codigoDescripcion = CodigoDescripcion.of(codigo, descripcion);
+        this.codigo = codigo;
+        this.descripcion = descripcion;
     }
 
 
-    public CodigoDescripcion<Integer, String> getCodigoDescripcion() {
-        return codigoDescripcion;
-    }
-
+    @Override
     public Integer getCodigo() {
-        return codigoDescripcion.getCodigo();
+        return codigo;
     }
 
+    @Override
     public String getDescripcion() {
-        return codigoDescripcion.getDescripcion();
+        return descripcion;
     }
+
+
 
     public static RecursoEcomarket valueOf(Integer codigo) {
         for (RecursoEcomarket recurso : values()) {
@@ -40,4 +48,6 @@ public enum RecursoEcomarket {
         }
         throw new IllegalArgumentException("No se encontró un recurso con el código: " + codigo);
     }
+
+
 }

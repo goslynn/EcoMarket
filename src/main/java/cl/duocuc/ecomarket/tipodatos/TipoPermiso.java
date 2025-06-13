@@ -8,8 +8,8 @@ public enum TipoPermiso {
     CREAR_USUARIO(NivelPermiso.CREACION, RecursoEcomarket.USUARIO),
     VER_USUARIOS(NivelPermiso.LECTURA, RecursoEcomarket.USUARIO),
     EDITAR_USUARIO(NivelPermiso.EDICION, RecursoEcomarket.USUARIO),
-    CREAR_VENTA(NivelPermiso.CREACION, RecursoEcomarket.PEDIDO),
-    VER_VENTAS(NivelPermiso.LECTURA, RecursoEcomarket.PEDIDO);
+    CREAR_VENTA(NivelPermiso.CREACION, RecursoEcomarket.VENTA),
+    VER_VENTAS(NivelPermiso.LECTURA, RecursoEcomarket.VENTA);
 
     final int valorCuantificable;
 
