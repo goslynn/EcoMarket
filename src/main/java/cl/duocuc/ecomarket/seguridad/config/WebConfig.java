@@ -1,6 +1,6 @@
-package cl.duocuc.ecomarket.security.config;
+package cl.duocuc.ecomarket.seguridad.config;
 
-import cl.duocuc.ecomarket.security.AuthPermisoJWTHandler;
+import cl.duocuc.ecomarket.seguridad.AuthPermisoJWTHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

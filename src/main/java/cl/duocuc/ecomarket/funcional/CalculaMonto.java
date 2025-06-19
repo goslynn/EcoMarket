@@ -2,17 +2,20 @@ package cl.duocuc.ecomarket.funcional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-
+@Component
 public class CalculaMonto {
+
     private static final BigDecimal IVA = new BigDecimal("0.19");
     private static final Logger log = LoggerFactory.getLogger(CalculaMonto.class);
 
-    public static Resultado calcular(List<LineaDetalle> lineasDetalle){
+    public Resultado calcular(List<LineaDetalle> lineasDetalle){
         BigDecimal totalNeto = BigDecimal.ZERO;
 
         for (LineaDetalle linea : lineasDetalle) {
@@ -33,7 +36,7 @@ public class CalculaMonto {
         );
     }
 
-    private static BigDecimal calcularLinea(LineaDetalle linea){
+    private BigDecimal calcularLinea(LineaDetalle linea){
         BigDecimal res = linea.getPrecioUnitario().multiply(BigDecimal.valueOf(linea.getCantidad()));
         log.info("linea -> {} * {} = {}", linea.getPrecioUnitario(), linea.getCantidad(), res);
         return res;
@@ -42,7 +45,7 @@ public class CalculaMonto {
 
     public record Resultado(
         BigDecimal subtotal,
-        BigDecimal total,
-        BigDecimal totalIva
+        BigDecimal totalIva,
+        BigDecimal total
     ){}
 }

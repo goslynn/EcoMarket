@@ -22,11 +22,13 @@ import java.util.stream.Collectors;
 public class ServicioVenta {
     private final VentaRepository ventaRepo;
     private final DetalleVentaRepository detalleRepo;
+    private final CalculaMonto calculaMonto;
 //    private final ServicioInventario inventario;
 
-    public ServicioVenta(VentaRepository venaRepo, DetalleVentaRepository detalleRepo) {
+    public ServicioVenta(VentaRepository venaRepo, DetalleVentaRepository detalleRepo, CalculaMonto calculaMonto) {
         this.ventaRepo = venaRepo;
         this.detalleRepo = detalleRepo;
+        this.calculaMonto = calculaMonto;
     }
 
     public RespuestaVentaDTO obtenerVenta(Integer id) throws ApiException {
@@ -62,7 +64,7 @@ public class ServicioVenta {
         return RespuestaVentaDTO.fromEntidad(registroVenta);
     }
 
-    private CalculaMonto.Resultado delegarCalculoMontos(List<DetalleVentaDTO> items) {
+    public CalculaMonto.Resultado delegarCalculoMontos(List<DetalleVentaDTO> items) {
         List<LineaDetalle> lineas = items.stream().map(item -> new LineaDetalle() {
             @Override
             public Long getCantidad() {
@@ -75,7 +77,7 @@ public class ServicioVenta {
             }
         }).collect(Collectors.toList());
 
-        return CalculaMonto.calcular(lineas);
+        return calculaMonto.calcular(lineas);
     }
 
 

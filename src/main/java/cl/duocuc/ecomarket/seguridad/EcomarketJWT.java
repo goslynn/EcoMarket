@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.security;
+package cl.duocuc.ecomarket.seguridad;
 
 
 import org.springframework.beans.factory.annotation.Value;

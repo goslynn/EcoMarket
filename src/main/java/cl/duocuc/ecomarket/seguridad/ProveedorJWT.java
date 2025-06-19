@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.security;
+package cl.duocuc.ecomarket.seguridad;
 
 public interface ProveedorJWT {
 

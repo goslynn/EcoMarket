@@ -1,4 +1,4 @@
-package cl.duocuc.ecomarket.security;
+package cl.duocuc.ecomarket.seguridad;
 
 import cl.duocuc.ecomarket.funcional.RequierePermiso;
 import cl.duocuc.ecomarket.modelo.entity.usuario.Usuario;
