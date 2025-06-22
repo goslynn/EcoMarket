@@ -31,13 +31,13 @@ public record RespuestaVentaDTO(
                         entidad.getObservaciones(),
                         entidad.getDetalleVentas().stream().map(DetalleVentaDTO::fromEntidad).toList()
                 ),
-                entidad.getFechaCreacion().toString()
+                entidad.getFechaCreacion() == null ? "null" : entidad.getFechaCreacion().toString()
         );
     }
 
 
     @Override
-    public Number getCodigo() {
+    public Integer getCodigo() {
         return idVenta();
     }
 

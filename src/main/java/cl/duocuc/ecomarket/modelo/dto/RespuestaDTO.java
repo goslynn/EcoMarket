@@ -10,4 +10,4 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * representando una entidad de la base de datos
  */
 @JsonIgnoreProperties({"codigo", "descripcion"})
-public interface RespuestaDTO extends CodigoDescripcion<Number, String> {}
+public interface RespuestaDTO extends CodigoDescripcion<Integer, String> {}

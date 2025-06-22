@@ -18,7 +18,7 @@ public record UsuarioResponseDTO(
     }
 
     @Override
-    public Number getCodigo() {
+    public Integer getCodigo() {
         return id;
     }
 

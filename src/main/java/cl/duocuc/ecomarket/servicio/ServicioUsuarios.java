@@ -285,4 +285,8 @@ public class ServicioUsuarios {
     public RolesPermisoRepository getRolesPermisoRepo() {
         return rolesPermisoRepo;
     }
+
+    public void setPersistencia(PersistenciaSP persistencia) {
+        this.persistencia = persistencia;
+    }
 }

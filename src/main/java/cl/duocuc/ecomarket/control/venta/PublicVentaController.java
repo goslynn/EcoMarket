@@ -11,8 +11,10 @@ import cl.duocuc.ecomarket.util.IdDescripcion;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +43,7 @@ public class PublicVentaController {
             description = "Venta encontrada",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = RespuestaVentaDTO.class)
+                    schema = @Schema(implementation = RespuestaVentaDTO.class)
             )
     )
     @ApiResponse(
@@ -61,12 +63,12 @@ public class PublicVentaController {
             summary = "Registrar una nueva venta",
             description = "Permite registrar una nueva venta. Requiere permiso de REGISTRAR_VENTAS."
     )
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    @RequestBody(
             description = "Datos de la venta a registrar",
             required = true,
             content = @Content(
                     mediaType = "application/json",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PeticionVentaDTO.class)
+                    schema = @Schema(implementation = PeticionVentaDTO.class)
             )
     )
     @ApiResponse(
@@ -74,11 +76,11 @@ public class PublicVentaController {
             description = "Venta registrada exitosamente, devuelve el ID de la venta y una pequeña descripcion.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = IdDescripcion.class)
+                    schema = @Schema(implementation = IdDescripcion.class)
             )
     )
     @PostMapping
-    public ResponseEntity<CodigoDescripcion<Number, String>> registrarVenta(@Valid @RequestBody PeticionVentaDTO venta){
+    public ResponseEntity<CodigoDescripcion<Integer, String>> registrarVenta(@Valid @RequestBody PeticionVentaDTO venta){
         return ResponseEntity.ok(servicio.registrarVenta(venta));
     }
 }

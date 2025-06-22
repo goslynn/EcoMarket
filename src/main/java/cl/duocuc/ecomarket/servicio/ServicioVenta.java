@@ -38,7 +38,7 @@ public class ServicioVenta {
         return RespuestaVentaDTO.fromEntidad(v);
     }
 
-    public CodigoDescripcion<Number, String> registrarVenta(PeticionVentaDTO venta) {
+    public CodigoDescripcion<Integer, String> registrarVenta(PeticionVentaDTO venta) {
         final Venta registroVenta = venta.toEntidad();
         final List<DetalleVenta> registroDetalle = new ArrayList<>();
 

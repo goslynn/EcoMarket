@@ -34,7 +34,7 @@ public record RolPermisosResponseDTO(
 
 
         @Override
-        public Number getCodigo() {
+        public Integer getCodigo() {
                 return null;
         }
 

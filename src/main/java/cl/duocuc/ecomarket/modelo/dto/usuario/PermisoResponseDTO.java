@@ -29,7 +29,7 @@ public record PermisoResponseDTO(
         }
 
         @Override
-        public Number getCodigo() {
+        public Integer getCodigo() {
                 return id;
         }
 
