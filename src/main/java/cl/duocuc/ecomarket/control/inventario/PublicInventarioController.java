@@ -14,7 +14,9 @@ import cl.duocuc.ecomarket.modelo.dto.inventario.SucursalRequestDTO;
 import cl.duocuc.ecomarket.modelo.dto.inventario.SucursalResponseDTO;
 
 import cl.duocuc.ecomarket.servicio.ServicioInventario;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,20 +29,36 @@ public class PublicInventarioController {
 
     private final ServicioInventario service;
 
-    // Constructor con inyección de dependencias
     public PublicInventarioController(ServicioInventario service){
         this.service = service;
     }
 
-    // ==============================
-    // Endpoints para Inventario
-    // ==============================
 
     @GetMapping("/{id}")
     public ResponseEntity<InventarioResponseDTO> consultarInventario(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerInventario(id));
     }
 
+    @Operation(
+            summary = "Crear nuevo inventario",
+            description = "Permite registrar un nuevo inventario en el sistema con los datos proporcionados."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos del inventario a registrar",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = InventarioRequestDTO.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Inventario creado exitosamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = InventarioResponseDTO.class)
+            )
+    )
     @PostMapping
     public ResponseEntity<InventarioResponseDTO> crearInventario(@RequestBody InventarioRequestDTO inventario){
         InventarioResponseDTO creado = service.crearInventario(inventario);
@@ -58,15 +76,32 @@ public class PublicInventarioController {
         service.desactivarInventario(id);
         return ResponseEntity.status(204).body(String.format("Inventario %d desactivado correctamente", id));
     }
-    // ==============================
-    // Endpoints para Bodega
-    // ==============================
 
     @GetMapping("/bodega/{id}")
     public ResponseEntity<BodegaResponseDTO> consultarBodega(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerBodega(id));
     }
 
+    @Operation(
+            summary = "Crear nueva bodega",
+            description = "Permite registrar una nueva bodega en el sistema con los datos proporcionados."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos de la bodega a registrar",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = BodegaRequestDTO.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Bodega creada exitosamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = BodegaResponseDTO.class)
+            )
+    )
     @PostMapping("/bodega")
     public ResponseEntity<BodegaResponseDTO> crearBodega(@RequestBody BodegaRequestDTO bodega){
         BodegaResponseDTO creada = service.crearBodega(bodega);
@@ -91,15 +126,31 @@ public class PublicInventarioController {
         return ResponseEntity.ok(service.listarBodegas());
     }
 
-    // ==============================
-    // Métodos para Sucursal
-    // ==============================
-
     @GetMapping("/sucursal/{id}")
     public ResponseEntity<SucursalResponseDTO> consultarSucursal(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerSucursal(id));
     }
 
+    @Operation(
+            summary = "Crear nueva sucursal",
+            description = "Permite registrar una nueva sucursal en el sistema con los datos proporcionados."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos de la sucursal a registrar",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = SucursalRequestDTO.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Sucursal creada exitosamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = SucursalResponseDTO.class)
+            )
+    )
     @PostMapping("/sucursal")
     public ResponseEntity<SucursalResponseDTO> crearSucursal(@RequestBody SucursalRequestDTO sucursal){
         SucursalResponseDTO creada = service.crearSucursal(sucursal);
@@ -123,15 +174,31 @@ public class PublicInventarioController {
         return ResponseEntity.ok(service.listarSucursales());
     }
 
-    // ==============================
-    // Endpoints para Familia
-    // ==============================
-
     @GetMapping("/familia/{id}")
     public ResponseEntity<FamiliaResponseDTO> consultarFamilia(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerFamilia(id));
     }
 
+    @Operation(
+            summary = "Crear nueva familia",
+            description = "Permite registrar una nueva familia de productos en el sistema."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos de la familia a registrar",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = FamiliaRequestDTO.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Familia creada exitosamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = FamiliaResponseDTO.class)
+            )
+    )
     @PostMapping("/familia")
     public ResponseEntity<FamiliaResponseDTO> crearFamilia(@RequestBody FamiliaRequestDTO familia){
         FamiliaResponseDTO creada = service.crearFamilia(familia);
@@ -155,15 +222,31 @@ public class PublicInventarioController {
         return ResponseEntity.ok(service.listarFamilias());
     }
 
-    // ==============================
-    // Endpoints para SubFamilia
-    // ==============================
-
     @GetMapping("/subfamilia/{id}")
     public ResponseEntity<SubFamiliaResponseDTO> consultarSubFamilia(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerSubFamilia(id));
     }
 
+    @Operation(
+            summary = "Crear nueva subfamilia",
+            description = "Permite registrar una nueva subfamilia asociada a una familia existente."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos de la subfamilia a registrar",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = SubFamiliaRequestDTO.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Subfamilia creada exitosamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = SubFamiliaResponseDTO.class)
+            )
+    )
     @PostMapping("/subfamilia")
     public ResponseEntity<SubFamiliaResponseDTO> crearSubFamilia(@RequestBody SubFamiliaRequestDTO subfamilia){
         SubFamiliaResponseDTO creada = service.crearSubFamilia(subfamilia);
@@ -187,15 +270,31 @@ public class PublicInventarioController {
         return ResponseEntity.ok(service.listarSubFamilias());
     }
 
-    // ==============================
-    // Endpoints para Producto
-    // ==============================
-
     @GetMapping("/producto/{id}")
     public ResponseEntity<ProductoResponseDTO> consultarProducto(@PathVariable Long id){
         return ResponseEntity.ok(service.obtenerProducto(id));
     }
 
+    @Operation(
+            summary = "Crear nuevo producto",
+            description = "Permite registrar un nuevo producto en el sistema."
+    )
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos del producto a registrar",
+            required = true,
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ProductoRequestDTO.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Producto creado exitosamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ProductoResponseDTO.class)
+            )
+    )
     @PostMapping("/producto")
     public ResponseEntity<ProductoResponseDTO> crearProducto(@RequestBody ProductoRequestDTO producto){
         ProductoResponseDTO creado = service.crearProducto(producto);
@@ -218,4 +317,5 @@ public class PublicInventarioController {
     public ResponseEntity<List<ProductoResponseDTO>> listarProductos(){
         return ResponseEntity.ok(service.listarProductos());
     }
+
 }
